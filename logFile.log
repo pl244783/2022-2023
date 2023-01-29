@@ -1,0 +1,5 @@
+DEBUG:root:Debug message
+INFO:root:info message
+WARNING:root:Warning message
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 947-306-796

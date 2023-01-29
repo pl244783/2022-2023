@@ -1,6 +1,6 @@
 # robot class
 # need the three lines below each time you write code to power the bot
-from adafruit_motorkit import MotorKit
+#from adafruit_motorkit import MotorKit
 
 kit = MotorKit(0x40)
 import time

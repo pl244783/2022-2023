@@ -1,11 +1,17 @@
-from flask import request, render_template
-import flask
+from flask import Flask, request, render_template
 #from robotLibrary import Robot
+import logging
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 #robot = Robot()
 
 #run flask run --host=0.0.0.0
+
+logging.basicConfig(filename='logFile.log', level=logging.DEBUG, filemode = 'w')
+ 
+logging.debug('Debug message')
+logging.info('info message')
+logging.warning('Warning message')
 
 @app.route('/')
 def index():
@@ -43,7 +49,6 @@ def right():
     #robot.motorRight(speedL, speedR, timeMS)
     return "<p>right</p>"
 
-
-
 if __name__=='__main__':
     app.run(debug = True)
+
