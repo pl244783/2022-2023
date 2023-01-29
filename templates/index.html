@@ -15,13 +15,11 @@
 
     <div class="topL">Section 2
       <p style = "font-size:15px;">different font size pog</p>
-      <a href="/html/default.asp">HTML tutorial</a>
       real
     </div>
 
     <div class="downL">Section 3
-      <p style = "font-size:50px;">ywy</p>
-      <button onclick="forward()">forward</button>
+      <button onclick="forward()">Forward</button>
       <script>
         function forward() {
           fetch('forward')
@@ -39,7 +37,7 @@
         }
       </script>
 
-      <button onclick="right()">right</button>
+      <button onclick="right()">Right</button>
       <script>
         function right() {
           fetch('right')
@@ -48,7 +46,7 @@
         }
       </script>
 
-      <button onclick="left()">left</button>
+      <button onclick="left()">Left</button>
       <script>
         function left() {
           fetch('left')
@@ -57,10 +55,27 @@
         }
       </script>
 
+      <button onclick="funny()">Other</button>
+      <script>
+        function funny() {
+        fetch('forward')
+        fetch('right')
+        fetch('forward')
+        fetch('left')
+        .then((response) => response.json())
+        .then((data) => console.log(data));
+        }
+      </script>
     </div>
 
     <div class="downR">Section 4
       <p style = "font-size:20px;">yippe</p>
+      <iframe
+        src="assets/logFile.log"
+        scrolling="auto"
+        height="50%"
+        width="100%">
+      </iframe>
     </div>
 
   </div>

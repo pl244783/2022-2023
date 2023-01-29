@@ -1,6 +1,5 @@
 from flask import request, render_template
 import flask
-import time
 #from robotLibrary import Robot
 
 app = flask.Flask(__name__)
@@ -19,7 +18,6 @@ def forward():
     timeMS = int(request.args.get('timeMS', default = 1000))
     #robot.motorForward(speedL, speedR, timeMS)
     return "<p>forward</p>"
-
 
 @app.route("/backward", methods = ['GET'])
 def backward():
@@ -44,6 +42,8 @@ def right():
     timeMS = int(request.args.get('timeMS', default = 850))
     #robot.motorRight(speedL, speedR, timeMS)
     return "<p>right</p>"
+
+
 
 if __name__=='__main__':
     app.run(debug = True)
