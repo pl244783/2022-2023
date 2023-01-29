@@ -7,20 +7,56 @@
  
 </head>
   <div class="body">
+
     <div class="topR">Section 1
       <p style = "font-size:30px;">ok but imagine</p>
       <iframe width="560" height="315" src="https://www.youtube.com/embed/jfKfPfyJRdk" frameborder="0"></iframe>
     </div>
+
     <div class="topL">Section 2
       <p style = "font-size:15px;">different font size pog</p>
       real
     </div>
+
     <div class="downL">Section 3
       <p style = "font-size:50px;">ywy</p>
-        <button type="button">Click Me!</button>
+      <button onclick="forward()">Forwards</button>
+      <p id="forward"></p>
+      <script>
+        function forward() {
+          document.getElementById("forward").innerHTML = "suprise xd";
+        }
+      </script>
+      
+      <button onclick="backward()">Backward</button>
+      <p id="backward"></p>
+      <script>
+        function backward() {
+          document.getElementById("backward").innerHTML = "suprise xd";
+        }
+      </script>
+
+      <button onclick="right()">right</button>
+      <p id="right"></p>
+      <script>
+        function right() {
+          document.getElementById("right").innerHTML = "suprise xd";
+        }
+      </script>
+
+      <button onclick="left()">left</button>
+      <p id="left"></p>
+      <script>
+        function left() {
+          document.getElementById("left").innerHTML = "suprise xd";
+        }
+      </script>
+
     </div>
+
     <div class="downR">Section 4
       <p style = "font-size:20px;">yippe</p>
     </div>
+
   </div>
 </html>
