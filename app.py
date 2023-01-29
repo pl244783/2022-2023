@@ -1,7 +1,9 @@
-from flask import Flask, request, render_template
+from flask import request, render_template
+import flask
+import time
 #from robotLibrary import Robot
 
-app = Flask(__name__)
+app = flask.Flask(__name__)
 #robot = Robot()
 
 #run flask run --host=0.0.0.0
@@ -42,6 +44,15 @@ def right():
     timeMS = int(request.args.get('timeMS', default = 850))
     #robot.motorRight(speedL, speedR, timeMS)
     return "<p>right</p>"
+
+class Outpost:
+    def __init__(self):
+        self.outposts = []
+
+    def add_outpost(self, data):
+        self.outposts.append(data)
+
+
 
 if __name__=='__main__':
     app.run(debug = True)
