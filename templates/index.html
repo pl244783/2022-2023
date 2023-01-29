@@ -15,24 +15,27 @@
 
     <div class="topL">Section 2
       <p style = "font-size:15px;">different font size pog</p>
+      <a href="/html/default.asp">HTML tutorial</a>
       real
     </div>
 
     <div class="downL">Section 3
       <p style = "font-size:50px;">ywy</p>
-      <button onclick="forward()">Forwards</button>
-      <p id="forward"></p>
+      <button onclick="forward()">forward</button>
       <script>
         function forward() {
-          document.getElementById("forward").innerHTML = "suprise xd";
+          fetch('forward')
+          .then((response) => response.json())
+          .then((data) => console.log(data));
         }
       </script>
       
       <button onclick="backward()">Backward</button>
-      <p id="backward"></p>
       <script>
         function backward() {
-          document.getElementById("backward").innerHTML = "suprise xd";
+          fetch('backward')
+          .then((response) => response.json())
+          .then((data) => console.log(data));
         }
       </script>
 
@@ -40,7 +43,9 @@
       <p id="right"></p>
       <script>
         function right() {
-          document.getElementById("right").innerHTML = "suprise xd";
+          fetch('right')
+          .then((response) => response.json())
+          .then((data) => console.log(data));
         }
       </script>
 
@@ -48,7 +53,9 @@
       <p id="left"></p>
       <script>
         function left() {
-          document.getElementById("left").innerHTML = "suprise xd";
+          fetch('left')
+          .then((response) => response.json())
+          .then((data) => console.log(data));
         }
       </script>
 

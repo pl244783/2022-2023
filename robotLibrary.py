@@ -5,7 +5,6 @@ from adafruit_motorkit import MotorKit
 kit = MotorKit(0x40)
 import time
 
-
 class Robot():
 
     def __init__(self):
