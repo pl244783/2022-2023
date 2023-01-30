@@ -1,76 +1,95 @@
 <!--  how to use css in python_ flask-->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<!--  Load CSS in Flask with html-->
-    <link rel="stylesheet" href='/static/main.css' />
- 
-</head>
+  <head>
+    <!--  Load CSS in Flask with html-->
+    <link rel="stylesheet" href="/static/main.css" />
+  </head>
   <div class="body">
-
-    <div class="topR">Section 1
-      <p style = "font-size:30px;">ok but imagine</p>
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/jfKfPfyJRdk" frameborder="0"></iframe>
+    <div class="topR">
+      Section 1
+      <p style="font-size: 30px">ok but imagine</p>
+      <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/jfKfPfyJRdk"
+        frameborder="0"
+      ></iframe>
     </div>
 
-    <div class="topL">Section 2
-      <p style = "font-size:15px;">different font size pog</p>
+    <div class="topL">
+      Section 2
+      <p style="font-size: 15px">different font size pog</p>
       real
     </div>
 
-    <div class="downL">Section 3
+    <div class="downL">
+      Section 3
       <button onclick="forward()">Forward</button>
       <script>
         function forward() {
-          fetch('forward')
-          .then((response) => response.json())
-          .then((data) => console.log(data));
+          fetch("forward")
+            .then((response) => response.json())
+            .then((data) => console.log(data));
         }
       </script>
-      
+
       <button onclick="backward()">Backward</button>
       <script>
         function backward() {
-          fetch('backward')
-          .then((response) => response.json())
-          .then((data) => console.log(data));
+          fetch("backward")
+            .then((response) => response.json())
+            .then((data) => console.log(data));
         }
       </script>
 
       <button onclick="right()">Right</button>
       <script>
         function right() {
-          fetch('right')
-          .then((response) => response.json())
-          .then((data) => console.log(data));
+          fetch("right")
+            .then((response) => response.json())
+            .then((data) => console.log(data));
         }
       </script>
 
       <button onclick="left()">Left</button>
       <script>
         function left() {
-          fetch('left')
-          .then((response) => response.json())
-          .then((data) => console.log(data));
+          fetch("left")
+            .then((response) => response.json())
+            .then((data) => console.log(data));
         }
       </script>
 
       <button onclick="funny()">Other</button>
       <script>
         function funny() {
-        fetch('forward')
-        fetch('right')
-        fetch('forward')
-        fetch('left')
-        .then((response) => response.json())
-        .then((data) => console.log(data));
+          fetch("forward");
+          fetch("right");
+          fetch("forward");
+          fetch("left")
+            .then((response) => response.json())
+            .then((data) => console.log(data));
         }
       </script>
     </div>
 
-    <div class="downR">Section 4
-      <p style = "font-size:50px;">yippe</p>
-        <!--<p>This is the latest output: <span id="latest"></span></p>
+    <div class="downR">
+      Section 4
+      <p style="font-size: 50px">yippe</p>
+      <iframe id="log" src="/static/logFile.log" width="700" height="500">
+        Not supported
+      </iframe>
+      <script>
+        setInterval(() => {
+          console.log(document.getElementById("log"));
+          let logFrame = document.getElementById("log");
+          logFrame.contentWindow.location.reload();
+          
+          logFrame.contentWindow.scrollTo( 0, 99999999 );
+        }, 2000);
+      </script>
+      <!--<p>This is the latest output: <span id="latest"></span></p>
         <p>This is all the output:</p>
         <ul id="output"></ul>
         <script>

@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 #run flask run --host=0.0.0.0
 
-logging.basicConfig(filename='logFile.log', level=logging.DEBUG, filemode = 'w')
+logging.basicConfig(filename='static/logFile.log', level=logging.DEBUG, filemode = 'w')
  
 logging.debug('Debug message')
 logging.info('info message')
@@ -57,9 +57,8 @@ def stream():
             while True:
                 yield f.read()
                 sleep(1)
-                
+
     return app.response_class(generate(), mimetype="text/plain")
 
 if __name__=='__main__':
-    app.run(debug = True)
-
+    app.run(host="0.0.0.0", port=8888, threaded=True, debug=True)
