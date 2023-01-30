@@ -57,7 +57,6 @@ def stream():
             while True:
                 yield f.read()
                 sleep(1)
-
     return app.response_class(generate(), mimetype="text/plain")
 
 if __name__=='__main__':
