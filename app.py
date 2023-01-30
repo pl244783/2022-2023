@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 #run flask run --host=0.0.0.0
 
-logging.basicConfig(filename='static/logFile.log', level=logging.DEBUG, filemode = 'w')
+logging.basicConfig(filename='static/logFile.html', level=logging.DEBUG, filemode = 'w')
  
 logging.debug('Debug message')
 logging.info('info message')
@@ -53,12 +53,13 @@ def right():
 @app.route('/stream')
 def stream():
     def generate():
-        with open('logFile.log') as f:
+        with open('/static/logFile.html') as f:
             while True:
                 yield f.read()
                 sleep(1)
 
-    return app.response_class(generate(), mimetype="text/plain")
+    return app.response_class(generate(), mimetype='html/text', as_attachment = False)
+
 
 if __name__=='__main__':
     app.run(host="0.0.0.0", port=8888, threaded=True, debug=True)
