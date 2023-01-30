@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 #from robotLibrary import Robot
 import logging
+from time import sleep
 
 app = Flask(__name__)
 #robot = Robot()
@@ -48,6 +49,16 @@ def right():
     timeMS = int(request.args.get('timeMS', default = 850))
     #robot.motorRight(speedL, speedR, timeMS)
     return "<p>right</p>"
+
+@app.route('/stream')
+def stream():
+    def generate():
+        with open('logFile.log') as f:
+            while True:
+                yield f.read()
+                sleep(1)
+
+    return app.response_class(generate(), mimetype="text/plain")
 
 if __name__=='__main__':
     app.run(debug = True)
