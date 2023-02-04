@@ -50,16 +50,5 @@ def right():
     #robot.motorRight(speedL, speedR, timeMS)
     return "<p>right</p>"
 
-@app.route('/stream')
-def stream():
-    def generate():
-        with open('/static/logFile.html') as f:
-            while True:
-                yield f.read()
-                sleep(1)
-
-    return app.response_class(generate(), mimetype='html/text', as_attachment = False)
-
-
 if __name__=='__main__':
     app.run(host="0.0.0.0", port=8888, threaded=True, debug=True)
