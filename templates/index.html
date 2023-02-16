@@ -71,7 +71,7 @@
 
     <div class="downR">
       Section 4<br>
-      <iframe id="log" src="/static/logFile.html" width="700" height="500" type="html/text" style="margin-top: 15px;">
+      <iframe id="log" src="/static/logFile.html" width="800" height="500" type="html/text" style="margin-top: 15px;">
         Not supported
       </iframe>
       <script>
@@ -82,9 +82,10 @@
           fetch('/static/logFile.html')
             .then(response => response.text())
             .then(text => {
+              text = text.trim() + '\n';
               text = text.replace(/\n/g, '<br>');
               logFrame.contentDocument.body.innerHTML = text;
-              logFrame.contentWindow.scrollTo(0, 99999999);
+              logFrame.contentWindow.scrollTo(0, logFrame.contentDocument.body.scrollHeight);
             });
         }, 200);
       </script>

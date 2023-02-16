@@ -1,10 +1,11 @@
-from flask import Flask, request, render_template
+from flask import Flask, render_template, request, redirect, session
 #from robotLibrary import Robot
 import logging
 from time import sleep
 
 app = Flask(__name__)
 #robot = Robot()
+app.secret_key = 'your-secret-key-here'
 
 #run flask run --host=0.0.0.0
 
@@ -22,7 +23,23 @@ logger.addHandler(handler)
  
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if 'username' in session:
+        return render_template('index.html')
+    else:
+        return redirect('/login')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username == 'user' and password == 'password':
+            session['username'] = username
+            return redirect('/')
+        else:
+            return render_template('login.html', message='Invalid username or password')
+    else:
+        return render_template('login.html')
  
 @app.route("/forward", methods = ['GET'])
 def forward():
