@@ -10,7 +10,6 @@
     <div class="topR">
       Section 1
       <p style="font-size: 30px">ok but imagine</p>
-        src="{{ url_for('video_feed') }}"
     </div>
 
     <div class="topL">
@@ -71,18 +70,23 @@
     </div>
 
     <div class="downR">
-      Section 4
-      <iframe id="log" src="/static/logFile.html" width="700" height="500" type = "html/text" style="margin-top: 15px;">
+      Section 4<br>
+      <iframe id="log" src="/static/logFile.html" width="700" height="500" type="html/text" style="margin-top: 15px;">
         Not supported
       </iframe>
       <script>
         setInterval(() => {
-          console.log(document.getElementById("log"));
           let logFrame = document.getElementById("log");
           logFrame.contentWindow.location.reload();
           
-          logFrame.contentWindow.scrollTo( 0, 99999999 );
-        }, 2000);
+          fetch('/static/logFile.html')
+            .then(response => response.text())
+            .then(text => {
+              text = text.replace(/\n/g, '<br>');
+              logFrame.contentDocument.body.innerHTML = text;
+              logFrame.contentWindow.scrollTo(0, 99999999);
+            });
+        }, 100);
       </script>
     </div>
   </div>
