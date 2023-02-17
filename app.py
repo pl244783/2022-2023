@@ -45,16 +45,13 @@ def login():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        print('help')
         username = request.form['username']
         password = request.form['password']
         
         with open('static/userFiles.txt', 'a') as f:
             f.write(username + ' ' + password + '\n')
-            print('saved')
 
-        print('saved2')
-        return redirect('/login'), 'help'
+        return redirect('/login')
     else: 
         return render_template('register.html')
  
