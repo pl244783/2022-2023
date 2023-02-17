@@ -33,13 +33,13 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username == 'user' and password == 'password':
-            session['username'] = username
-            return redirect('/')
-        else:
-            return render_template('login.html', message='Invalid username or password')
-    else:
-        return render_template('login.html')
+        with open('static/userFiles.txt', 'r') as f:
+            for line1, line2 in zip(f, f):
+                if username == line1.strip('\n') and password == line2.strip('\n'):
+                    session['username'] = username
+                    return redirect('/')
+    
+    return render_template('login.html')
     
 # new registration route
 @app.route('/register', methods=['GET', 'POST'])
@@ -47,11 +47,26 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
-        with open('static/userFiles.txt', 'a') as f:
-            f.write(username + ' ' + password + '\n')
+        validUsername = True
 
-        return redirect('/login')
+        with open('static/userFiles.txt', 'r') as d:
+            counter = 1
+            for i in d:
+                if counter%2 == 1:
+                    print(i)
+                    print(username)
+                    if username == i.strip('\n'):
+                        validUsername = False        
+                counter += 1
+        d.close()
+            
+        if validUsername:
+            with open('static/userFiles.txt', 'a') as f:
+                f.write(username + '\n' + password + '\n')
+
+                return redirect('/login') 
+        else: 
+            return render_template('register.html')
     else: 
         return render_template('register.html')
  
