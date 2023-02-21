@@ -102,5 +102,9 @@ def right():
     #robot.motorRight(speedL, speedR, timeMS)
     return "<p>right</p>"
 
+@app.route("/video_stream")
+def video_stream():
+    return "<p>help</p>"
+
 if __name__=='__main__':
     app.run(host="0.0.0.0", port=8888, threaded=True, debug=True)

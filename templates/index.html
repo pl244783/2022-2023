@@ -10,7 +10,8 @@
   <div class="body">
     <div class="topR">
       Section 1
-      <p style="font-size: 30px">ok but imagine</p>
+      <iframe src="video_stream" title="test" width="800" height="500" position: relative></iframe>
+      <img id="overlay-image" src="">
     </div>
 
     <div class="topL">
@@ -21,39 +22,18 @@
 
     <div class="downL">
       Section 3
-      <button onclick="forward()">Forward</button>
+      <button onclick="movingFunc('forward', '/static/forward.png')">Forward</button>
+      <button onclick="movingFunc('backward', '/static/backward.png')">Backward</button>
+      <button onclick="movingFunc('right', '/static/right.png')">Right</button>
+      <button onclick="movingFunc('left', '/static/left.png')">Left</button>
       <script>
-        function forward() {
-          fetch("forward")
+        function movingFunc(movingVar, imageSrc) {
+          fetch(movingVar)
             .then((response) => response.json())
             .then((data) => console.log(data));
-        }
-      </script>
 
-      <button onclick="backward()">Backward</button>
-      <script>
-        function backward() {
-          fetch("backward")
-            .then((response) => response.json())
-            .then((data) => console.log(data));
-        }
-      </script>
-
-      <button onclick="right()">Right</button>
-      <script>
-        function right() {
-          fetch("right")
-            .then((response) => response.json())
-            .then((data) => console.log(data));
-        }
-      </script>
-
-      <button onclick="left()">Left</button>
-      <script>
-        function left() {
-          fetch("left")
-            .then((response) => response.json())
-            .then((data) => console.log(data));
+          var overlayImage = document.getElementById('overlay-image');
+          overlayImage.src = imageSrc;
         }
       </script>
 

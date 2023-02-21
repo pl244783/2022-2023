@@ -54,4 +54,16 @@ button{
   cursor: pointer;
 }
 
+iframe {
+  position: relative;
+}
 
+#overlay-image {
+  position: absolute;
+  top: 7%;
+  left: 3%;
+  width: 5%;
+  height: 5%;
+  opacity: 0.5;
+  z-index: 1;
+}
