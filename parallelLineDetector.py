@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Load the photo
-img = cv2.imread('img5.jpg')
+img = cv2.imread('working3.jpg')
 
 # Convert the photo to grayscale
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -11,7 +11,9 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray, 50, 150, apertureSize=3)
 
 # Apply Hough Transform to detect lines
-lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=50, maxLineGap=10)
+lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=3000, maxLineGap=1000)
+
+true = False
 
 # Find pairs of parallel lines
 parallel_lines = []
@@ -23,6 +25,9 @@ for i in range(len(lines)):
         angle2 = np.arctan2(line2[1]-line2[3], line2[0]-line2[2]) * 180 / np.pi
         if np.abs(angle1 - angle2) < 5:
             parallel_lines.append((line1, line2))
+            true = True
+            break
+
 
 # Draw the detected lines on the photo
 for line in parallel_lines:
