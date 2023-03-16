@@ -2,16 +2,21 @@ import cv2
 import numpy as np
 
 # Load the photo
-img = cv2.imread('img5.jpg')
+img = cv2.imread('img6.jpg')
 
 # Convert the photo to grayscale
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-# Apply Canny edge detection
-edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+# Apply adaptive thresholding to binarize the image
+thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
+
+# Apply morphological operations to remove noise and fill gaps
+kernel = np.ones((5,5),np.uint8)
+opening = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
+closing = cv2.morphologyEx(opening, cv2.MORPH_CLOSE, kernel)
 
 # Apply Hough Transform to detect lines
-lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=50, maxLineGap=10)
+lines = cv2.HoughLinesP(closing, rho=1, theta=np.pi/180, threshold=100, minLineLength=50, maxLineGap=10)
 
 # Find pairs of parallel lines
 parallel_lines = []
@@ -25,12 +30,12 @@ for i in range(len(lines)):
             parallel_lines.append((line1, line2))
 
 # Draw the detected lines on the photo
-for line in parallel_lines:
+if len(parallel_lines) == 1:
+    line = parallel_lines[0]
     cv2.line(img, (line[0][0], line[0][1]), (line[0][2], line[0][3]), (0, 255, 0), 2)
     cv2.line(img, (line[1][0], line[1][1]), (line[1][2], line[1][3]), (0, 255, 0), 2)
 
-#comment this out when on school computer
-img = cv2.resize(img, dsize=(500,500))
+img = cv2.resize(img, dsize=(800,800))
 
 # Show the result
 cv2.imshow('Result', img)
