@@ -35,6 +35,7 @@ for line in parallel_lines:
 print((int(line[1][3])-int(line[0][3]))**2)
 print(math.sqrt((int(line[1][3])-int(line[0][3]))**2))
 
+#do x1+x2/2
 cv2.line(img, (math.sqrt((int(line[1][0])-int(line[0][0]))**2), math.sqrt((int(line[1][1])-int(line[0][1]))**2)),
          (math.sqrt((int(line[1][2])-int(line[0][2]))**2), math.sqrt((int(line[1][3])-int(line[0][3])**2))), (0, 0, 255), 2)
 
