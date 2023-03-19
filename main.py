@@ -1,4 +1,3 @@
-#CENTER OF TWO LINES TURNING AT 90 DEGREES
 import cv2
 import numpy as np
 
@@ -13,7 +12,7 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray, 50, 150, apertureSize=3)
 
 # Apply Hough Transform to detect lines
-lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=200, maxLineGap=10000)
+lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=2000, maxLineGap=1000)
 
 # Find pairs of parallel lines
 parallel_lines = []
@@ -25,14 +24,18 @@ for i in range(len(lines)):
         angle2 = np.arctan2(line2[1]-line2[3], line2[0]-line2[2]) * 180 / np.pi
         if np.abs(angle1 - angle2) < 5:
             parallel_lines.append((line1, line2))
-
+            print(line1, line2)
 
 # Draw the detected lines on the photo
 for line in parallel_lines:
     cv2.line(img, (line[0][0], line[0][1]), (line[0][2], line[0][3]), (0, 255, 0), 2)
     cv2.line(img, (line[1][0], line[1][1]), (line[1][2], line[1][3]), (0, 255, 0), 2)
-    cv2.line(img, (int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), (int((line[0][2]+line[1][2])/2), int((line[0][3]+line[1][3])/2)), (0, 0, 255), 5)
+    cv2.line(img, (int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), (int((line[0][2]+line[1][2])/2), int((line[0][3]+line[1][3])/2)), (0, 255, 0), 2)
 
+# cv2.line(img, (line1[0], line1[1]), (line1[2], line1[3]), (0, 0, 255), 5)
+# cv2.line(img, (line2[0], line2[1]), (line2[2], line2[3]), (0, 0, 255), 5)
+
+#print((int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), line1, line2)
 
 #comment this out when on school computer
 img = cv2.resize(img, dsize=(900,900))
