@@ -3,7 +3,7 @@ import numpy as np
 
 # Load the photo
 #use 1, 2, 6
-img = cv2.imread('img1.jpg')
+img = cv2.imread('test.jpg')
 
 # Convert the photo to grayscale
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -12,7 +12,7 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray, 50, 150, apertureSize=3)
 
 # Apply Hough Transform to detect lines
-lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=2000, maxLineGap=1000)
+lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=100, minLineLength=200, maxLineGap=1000)
 
 # Find pairs of parallel lines
 parallel_lines = []
@@ -30,7 +30,7 @@ for i in range(len(lines)):
 for line in parallel_lines:
     cv2.line(img, (line[0][0], line[0][1]), (line[0][2], line[0][3]), (0, 255, 0), 2)
     cv2.line(img, (line[1][0], line[1][1]), (line[1][2], line[1][3]), (0, 255, 0), 2)
-    cv2.line(img, (int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), (int((line[0][2]+line[1][2])/2), int((line[0][3]+line[1][3])/2)), (0, 255, 0), 2)
+    cv2.line(img, (int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), (int((line[0][2]+line[1][2])/2), int((line[0][3]+line[1][3])/2)), (0, 255, 255), 2)
 
 # cv2.line(img, (line1[0], line1[1]), (line1[2], line1[3]), (0, 0, 255), 5)
 # cv2.line(img, (line2[0], line2[1]), (line2[2], line2[3]), (0, 0, 255), 5)
