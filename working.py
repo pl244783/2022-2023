@@ -37,7 +37,7 @@ def draw_line(img, x1, y1, x2, y2, colour, thickness):
             break
     
     if x1_nearby and y1_nearby and x2_nearby and y2_nearby:
-        color = (0, 255, 0)
+        colour = (0, 255, 0)
     
     cv2.line(img, (x1, y1), (x2, y2), colour, thickness)
 
@@ -54,7 +54,7 @@ for line in parallel_lines:
 #print((int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), line1, line2)
 
 #comment this out when on school computer
-img = cv2.resize(img, dsize=(900,900))
+img = cv2.resize(img, dsize=(500,500))
 
 # Show the result
 cv2.imshow('Result', img)
