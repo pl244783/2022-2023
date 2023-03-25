@@ -3,7 +3,7 @@ import numpy as np
 
 # Load the photo
 #use 1, 2, 6
-img = cv2.imread('working6.jpg')
+img = cv2.imread('working2.jpg')
 
 # Convert the photo to grayscale
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
