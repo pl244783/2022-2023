@@ -44,3 +44,21 @@ img = cv2.resize(img, dsize=(900,900))
 cv2.imshow('Result', img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
+
+#https://9to5answer.com/python-opencv-detect-parallel-lines
+#https://stackoverflow.com/questions/53571673/how-to-detect-parallel-lines-in-a-similar-path-using-opencv-in-python
+    #lines1 = []
+# for i in range(len(lines)):
+#     for j in range(len(lines)):
+#         if (i == j):continue
+#         if (abs(lines[i][1] - lines[j][1]) == 0):          
+#              #You've found a parallel line!
+#              lines1.append((i,j))
+#yea idk
+#https://www.geeksforgeeks.org/line-detection-python-opencv-houghline-method/
+
+#    x1, y1, x2, y2 = line[0]
+
+#https://answers.opencv.org/question/52936/lines-parallel-with-houghlines-opencvpython/
+# double Angle = atan2(y2 - y1, x2 - x1) * 180.0 / CV_PI;
