@@ -62,3 +62,6 @@ cv2.destroyAllWindows()
 
 #https://answers.opencv.org/question/52936/lines-parallel-with-houghlines-opencvpython/
 # double Angle = atan2(y2 - y1, x2 - x1) * 180.0 / CV_PI;
+
+#https://stackoverflow.com/questions/48677185/parallel-line-detection-using-hough-transform-opencv-and-python
+#https://stackoverflow.com/questions/15780210/python-opencv-detect-parallel-lines
