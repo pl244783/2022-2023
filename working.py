@@ -29,14 +29,14 @@ for i in range(len(lines)):
 
 def draw_line(img, x1, y1, x2, y2, colour, thickness):
     #var def uwu
-    x1_nearby, y1_nearby, x2_nearby, y2_nearby = False, False, False, False
+    nearBy = False
     #checks for idk tbh close lines maybe
     for other_line in parallel_lines:
         if (abs(other_line[0][0] - x1) < 160 and abs(other_line[0][1] - y1) < 160) or (abs(other_line[0][2] - x2) < 160 and abs(other_line[0][3] - y2) < 160):
-            x1_nearby, y1_nearby, x2_nearby, y2_nearby = True, True, True, True
+            nearBy = True
             break
     
-    if x1_nearby and y1_nearby and x2_nearby and y2_nearby:
+    if nearBy:
         colour = (0, 255, 0)
     
     cv2.line(img, (x1, y1), (x2, y2), colour, thickness)
