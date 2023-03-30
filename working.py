@@ -4,7 +4,7 @@ import numpy as np
 # Load the photo
 #use 5 is pretty good ,questionable 4, 2 is also questionable
 #nvm 2 is peak
-img = cv2.imread('newFile2.jpg')
+img = cv2.imread('bent2.jpg')
 
 # Convert the photo to grayscale
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -29,14 +29,14 @@ for i in range(len(lines)):
 
 def draw_line(img, x1, y1, x2, y2, colour, thickness):
     #var def uwu
-    nearBy = False
+    x1_nearby, y1_nearby, x2_nearby, y2_nearby = False, False, False, False
     #checks for idk tbh close lines maybe
     for other_line in parallel_lines:
-        if (abs(other_line[0][0] - x1) < 160 and abs(other_line[0][1] - y1) < 160) or (abs(other_line[0][2] - x2) < 160 and abs(other_line[0][3] - y2) < 160):
-            nearBy = True
+        if (abs(other_line[0][0] - x1) < 100 and abs(other_line[0][1] - y1) < 100) or (abs(other_line[0][2] - x2) < 100 and abs(other_line[0][3] - y2) < 100):
+            x1_nearby, y1_nearby, x2_nearby, y2_nearby = True, True, True, True
             break
     
-    if nearBy:
+    if x1_nearby and y1_nearby and x2_nearby and y2_nearby:
         colour = (0, 255, 0)
     
     cv2.line(img, (x1, y1), (x2, y2), colour, thickness)
