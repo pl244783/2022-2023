@@ -37,6 +37,7 @@ for line in parallel_lines:
 
 #print((int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), line1, line2)
 
+
 #comment this out when on school computer
 img = cv2.resize(img, dsize=(900,900))
 

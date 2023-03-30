@@ -102,8 +102,7 @@ cv2.waitKey(0)
 # Finding Contours
 # Use a copy of the image e.g. edged.copy()
 # since findContours alters the image
-contours, hierarchy = cv2.findContours(edged, 
-    cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+contours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
   
 print("Number of Contours found = " + str(len(contours)))
   
