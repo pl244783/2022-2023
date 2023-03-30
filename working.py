@@ -14,6 +14,7 @@ edges = cv2.Canny(gray, 50, 150, apertureSize=3)
 
 # Apply Hough Transform to detect lines
 lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=100, minLineLength=0, maxLineGap=400)
+contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
 # Find pairs of parallel lines
 parallel_lines = []
@@ -29,14 +30,14 @@ for i in range(len(lines)):
 
 def draw_line(img, x1, y1, x2, y2, colour, thickness):
     #var def uwu
-    x1_nearby, y1_nearby, x2_nearby, y2_nearby = False, False, False, False
+    nearBy = False
     #checks for idk tbh close lines maybe
     for other_line in parallel_lines:
         if (abs(other_line[0][0] - x1) < 100 and abs(other_line[0][1] - y1) < 100) or (abs(other_line[0][2] - x2) < 100 and abs(other_line[0][3] - y2) < 100):
-            x1_nearby, y1_nearby, x2_nearby, y2_nearby = True, True, True, True
+            nearBy = True
             break
     
-    if x1_nearby and y1_nearby and x2_nearby and y2_nearby:
+    if nearBy:
         colour = (0, 255, 0)
     
     cv2.line(img, (x1, y1), (x2, y2), colour, thickness)
@@ -52,6 +53,11 @@ for line in parallel_lines:
 # cv2.line(img, (line2[0], line2[1]), (line2[2], line2[3]), (0, 0, 255), 5)
 
 #print((int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), line1, line2)
+
+#i love inefficienices!!!!!
+for x in contours:
+    print(x)
+cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
 
 #comment this out when on school computer
 img = cv2.resize(img, dsize=(500,500))
