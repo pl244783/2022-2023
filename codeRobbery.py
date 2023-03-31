@@ -83,39 +83,42 @@
 # img = cv2.resize(img, dsize = (500,500))
 # cv2.imshow('Result', img)
 # cv2.waitKey(0)
+# # cv2.destroyAllWindows()
+
+# import cv2
+# import numpy as np
+  
+# img = cv2.imread('bent2.jpg')
+
+# # Convert the photo to grayscale
+# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# # Apply Canny edge detection
+# edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+  
+# # Grayscale
+# gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+  
+# # Find Canny edges
+# edged = cv2.Canny(gray, 30, 200)
+
+# # Finding Contours
+# # Use a copy of the image e.g. edged.copy()
+# # since findContours alters the image
+# contours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+  
+# print("Number of Contours found = " + str(len(contours)))
+  
+# # Draw all contours
+# # -1 signifies drawing all contours
+# for x in contours:
+#     print(x)
+# cv2.drawContours(image, contours, -1, (0, 255, 0), 3)
+
+# image = cv2.resize(image, dsize=(600,600)) 
+# cv2.imshow('Contours', image)
+# cv2.waitKey(0)
 # cv2.destroyAllWindows()
-
-import cv2
-import numpy as np
-  
-# Let's load a simple image with 3 black squares
-image = cv2.imread('bent2.jpg')
-cv2.waitKey(0)
-  
-# Grayscale
-gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-  
-# Find Canny edges
-edged = cv2.Canny(gray, 30, 200)
-cv2.waitKey(0)
-  
-# Finding Contours
-# Use a copy of the image e.g. edged.copy()
-# since findContours alters the image
-contours, hierarchy = cv2.findContours(edged, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-  
-print("Number of Contours found = " + str(len(contours)))
-  
-# Draw all contours
-# -1 signifies drawing all contours
-for x in contours:
-    print(x)
-cv2.drawContours(image, contours, -1, (0, 255, 0), 3)
-
-image = cv2.resize(image, dsize=(600,600)) 
-cv2.imshow('Contours', image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
 #https://www.geeksforgeeks.org/find-and-draw-contours-using-opencv-python/
 # --> geeksforgeeks idk to this 
 
@@ -145,4 +148,28 @@ cv2.destroyAllWindows()
 # ret, thresh = cv.threshold(imgray, 127, 255, 0)
 # im2, contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
+#honkers
+import numpy as np
+import cv2
+
+img = cv2.imread('bent2.jpg')
+
+# Convert the photo to grayscale
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Apply Canny edge detection
+edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+
+#maybe put this in an if statement
+contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+#i love inefficienices!!!!!
+for x in contours:
+    print(x)
+cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
+
+img = cv2.resize(img, dsize=(500,500))
+cv2.imshow('Result', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
