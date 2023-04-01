@@ -13,7 +13,7 @@ gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray, 50, 150, apertureSize=3)
 
 # Apply Hough Transform to detect lines
-lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=100, minLineLength=0, maxLineGap=400)
+lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=60, minLineLength=0, maxLineGap=400)
 
 # Find pairs of parallel lines
 parallel_lines = []
@@ -46,21 +46,13 @@ for line in parallel_lines:
     draw_line(img, int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2), int((line[0][2]+line[1][2])/2), int((line[0][3]+line[1][3])/2), (0, 0, 255), 2)
     #cv2.line(img, (int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), (int((line[0][2]+line[1][2])/2), int((line[0][3]+line[1][3])/2)), (0, 255, 0), 2)
 
+#this is stupid, i can't believe it's useless
 #maybe put this in an if statement
-contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+# contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
 #i love inefficienices!!!!!
 # for x in contours:
 #     print(x)
-
-dArray = [[[0,0],[1,1]],[[2, 2],[3,3]]]
-print(dArray[0], dArray[0][1], dArray[1][1][1])
-
-#ok contours is a 4darray
-print(contours[1][0][0], 'lmao')    
-# for i in range(1, len(contours)-1):
-#     if abs(contours[i-1][0]-contours[i][0]) > 3 and abs(contours[i-1][0]-contours[i][0]) > 3:
-#         cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
 
 #comment this out when on school computer
 img = cv2.resize(img, dsize=(500,500))
