@@ -46,18 +46,21 @@ for line in parallel_lines:
     draw_line(img, int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2), int((line[0][2]+line[1][2])/2), int((line[0][3]+line[1][3])/2), (0, 0, 255), 2)
     #cv2.line(img, (int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), (int((line[0][2]+line[1][2])/2), int((line[0][3]+line[1][3])/2)), (0, 255, 0), 2)
 
-# cv2.line(img, (line1[0], line1[1]), (line1[2], line1[3]), (0, 0, 255), 5)
-# cv2.line(img, (line2[0], line2[1]), (line2[2], line2[3]), (0, 0, 255), 5)
-
-#print((int((line[0][0]+line[1][0])/2), int((line[0][1]+line[1][1])/2)), line1, line2)
-
 #maybe put this in an if statement
 contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
 
 #i love inefficienices!!!!!
-for x in contours:
-    print(x)
-cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
+# for x in contours:
+#     print(x)
+
+dArray = [[[0,0],[1,1]],[[2, 2],[3,3]]]
+print(dArray[0], dArray[0][1], dArray[1][1][1])
+
+#ok contours is a 4darray
+print(contours[1][0][0], 'lmao')    
+# for i in range(1, len(contours)-1):
+#     if abs(contours[i-1][0]-contours[i][0]) > 3 and abs(contours[i-1][0]-contours[i][0]) > 3:
+#         cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
 
 #comment this out when on school computer
 img = cv2.resize(img, dsize=(500,500))
