@@ -172,4 +172,4 @@ img = cv2.resize(img, dsize=(500,500))
 cv2.imshow('Result', img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-
+#
