@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+#
 # Load the photo
 #use 5 is pretty good ,questionable 4, 2 is also questionable
 #nvm 2 is peak
