@@ -11,7 +11,7 @@ for line in lines:
     x1, y1, x2, y2 = line[0]
     cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
-img = cv2.resize(img, dsize=(1000,1000))
+img = cv2.resize(img, dsize=(500,500))
 cv2.imshow('Result', img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
