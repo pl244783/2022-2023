@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img = cv2.imread('gitHubPhoto2.jpg')
+img = cv2.imread('roadPictures/homePhoto1.jpg')
 img = cv2.GaussianBlur(img, (5, 5), 0)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray, 120, 200, apertureSize=3, L2gradient = True)
@@ -38,7 +38,7 @@ for line in lines:
 # cv2.line(img, (refPointOne[0], refPointOne[1]), (refPointOne[2], refPointOne[3]), (0, 255, 0), 1)
 # cv2.line(img, (refPointTwo[0], refPointTwo[1]), (refPointTwo[2], refPointTwo[3]), (0, 255, 0), 1)
 
-#img = cv2.resize(edges, dsize=(500,500))
+img = cv2.resize(edges, dsize=(500,500))
 cv2.imshow('Result', img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
