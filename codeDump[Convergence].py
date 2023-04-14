@@ -27,7 +27,6 @@ def nearTrueMid(x1, y1, x2, y2):
     if (abs(midPointCoord[0] - x1) < 50 and abs(midPointCoord[1] - y1) < 50) or (abs(midPointCoord[0] - x2) < 50 and abs(midPointCoord[1] - y2) < 50):
         cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 3) 
 
-
 for line in lines:
     x1, y1, x2, y2 = line[0]
     nearBy(x1, y1, x2, y2)
