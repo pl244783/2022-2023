@@ -29,6 +29,7 @@ for line in lines:
     nearBy(x1, y1, x2, y2)
     print(x1, x2, y1, y2)
 
+#reference area
 cv2.line(img, (midPointCoord[0], midPointCoord[1]), (midPointCoord[2], midPointCoord[3]), (255, 0, 0), 1)
 cv2.line(img, (refPointOne[0], refPointOne[1]), (refPointOne[2], refPointOne[3]), (0, 255, 0), 1)
 cv2.line(img, (refPointTwo[0], refPointTwo[1]), (refPointTwo[2], refPointTwo[3]), (0, 255, 0), 1)
