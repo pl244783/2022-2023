@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img = cv2.imread('gitHubPhoto1.jpg')
+img = cv2.imread('gitHubPhoto2.jpg')
 img = cv2.GaussianBlur(img, (5, 5), 0)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray, 120, 200, apertureSize=3, L2gradient = True)
@@ -25,7 +25,7 @@ def nearBy(x1, y1, x2, y2):
     
 def nearTrueMid(x1, y1, x2, y2):
     if (abs(midPointCoord[0] - x1) < 50 and abs(midPointCoord[1] - y1) < 50) or (abs(midPointCoord[0] - x2) < 50 and abs(midPointCoord[1] - y2) < 50):
-        cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 1) 
+        cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 3) 
 
 
 for line in lines:
