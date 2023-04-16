@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import math
 
+#I don't know why my program needs this function, but when I try to delete it, it doesn't work anymore
 def nearBy(x1, y1, x2, y2):
     #left
     if (abs(refPointOne[2] - x1) < 200 and abs(refPointOne[3] - y1) < 200) or (abs(refPointOne[2] - x2) < 200 and abs(refPointOne[3] - y2) < 200):
