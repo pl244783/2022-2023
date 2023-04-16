@@ -22,7 +22,7 @@ def nearTrueMid(x1, y1, x2, y2, direction):
  
 
 #1 sucks, 2 is tentative, 3 is trash
-cap = cv2.VideoCapture('roadVideos/gitHubVideo1.mp4')
+cap = cv2.VideoCapture('roadVideos/homeVideo2.mp4')
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -48,7 +48,7 @@ while cap.isOpened():
         # cv2.line(frame, (refPointOne[0], refPointOne[1]), (refPointOne[2], refPointOne[3]), (0, 255, 0), 1)
         # cv2.line(frame, (refPointTwo[0], refPointTwo[1]), (refPointTwo[2], refPointTwo[3]), (0, 255, 0), 1)
 
-        #frame = cv2.resize(frame, dsize = (500, 500))
+        frame = cv2.resize(frame, dsize = (500, 500))
         cv2.imshow("Road Detection", frame)
 
         if cv2.waitKey(10) & 0xFF == ord('q'):

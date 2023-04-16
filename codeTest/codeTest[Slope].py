@@ -60,7 +60,7 @@ while cap.isOpened():
         # cv2.line(frame, (refPointOne[0], refPointOne[1]), (refPointOne[2], refPointOne[3]), (0, 255, 0), 1)
         # cv2.line(frame, (refPointTwo[0], refPointTwo[1]), (refPointTwo[2], refPointTwo[3]), (0, 255, 0), 1)
 
-        #frame = cv2.resize(frame, dsize = (500, 500))
+        frame = cv2.resize(frame, dsize = (480, 540))
         cv2.imshow("Road Detection", frame)
 
         if cv2.waitKey(10) & 0xFF == ord('q'):
