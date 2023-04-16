@@ -13,13 +13,12 @@ def nearBy(x1, y1, x2, y2):
 def nearTrueMid(x1, y1, x2, y2, direction):
     #cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 255), 3)
     if (abs(midPointCoord[0] - x1) < 50 and abs(midPointCoord[1] - y1) < 50) or (abs(midPointCoord[0] - x2) < 50 and abs(midPointCoord[1] - y2) < 50):
-        if (abs(midPointCoord[0] - x1) < 50 and abs(midPointCoord[1] - y1) < 50) or (abs(midPointCoord[0] - x2) < 50 and abs(midPointCoord[1] - y2) < 50):
-            if y1 < midPointCoord[1]:
-                cv2.line(frame, (direction, midPointCoord[1]), (x2, y2), (0, 0, 255), 2)
-            elif y2 < midPointCoord[1]:
-                cv2.line(frame, (x1, y1), (direction, midPointCoord[1]), (0, 0, 255), 2) 
-            else: 
-                cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 2) 
+        if y1 < midPointCoord[1]:
+            cv2.line(frame, (direction, midPointCoord[1]), (x2, y2), (0, 0, 255), 2)
+        elif y2 < midPointCoord[1]:
+            cv2.line(frame, (x1, y1), (direction, midPointCoord[1]), (0, 0, 255), 2) 
+        else: 
+            cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 2) 
  
 
 #1 sucks, 2 is tentative, 3 is trash
@@ -49,10 +48,10 @@ while cap.isOpened():
         # cv2.line(frame, (refPointOne[0], refPointOne[1]), (refPointOne[2], refPointOne[3]), (0, 255, 0), 1)
         # cv2.line(frame, (refPointTwo[0], refPointTwo[1]), (refPointTwo[2], refPointTwo[3]), (0, 255, 0), 1)
 
-        frame = cv2.resize(frame, dsize = (500, 500))
+        #frame = cv2.resize(frame, dsize = (500, 500))
         cv2.imshow("Road Detection", frame)
 
-        if cv2.waitKey(100) & 0xFF == ord('q'):
+        if cv2.waitKey(10) & 0xFF == ord('q'):
             break
     else:
         break

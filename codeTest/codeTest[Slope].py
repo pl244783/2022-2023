@@ -1,32 +1,39 @@
 import cv2
 import numpy as np
+import math
 
-def nearBy(x1, y1, x2, y2):
-    #left
-    if (abs(refPointOne[2] - x1) < 100 and abs(refPointOne[3] - y1) < 150) or (abs(refPointOne[2] - x2) < 100 and abs(refPointOne[3] - y2) < 150):
-        nearTrueMid(x1, y1, x2, y2, refPointOne[0])
-        return 'left'
+# def nearBy(x1, y1, x2, y2):
+#     #left
+#     if (abs(refPointOne[2] - x1) < 200 and abs(refPointOne[3] - y1) < 200) or (abs(refPointOne[2] - x2) < 200 and abs(refPointOne[3] - y2) < 200):
+#         nearTrueMid(x1, y1, x2, y2, (0, 0, 255))
     
-    #right
-    elif (abs(refPointTwo[2] - x1) < 100 and abs(refPointTwo[3] - y1) < 150) or (abs(refPointTwo[2] - x2) < 100 and abs(refPointTwo[3] - y2) < 150):
-        nearTrueMid(x1, y1, x2, y2, refPointTwo[0])
-        return 'right'
-        
-def nearTrueMid(x1, y1, x2, y2, direction):
-    #cv2.line(frame, (x1, y1), (x2, y2), (0, 255, 255), 3)
-    if (abs(midPointCoord[0] - x1) < 50 and abs(midPointCoord[1] - y1) < 50) or (abs(midPointCoord[0] - x2) < 50 and abs(midPointCoord[1] - y2) < 50):
-        if (abs(midPointCoord[0] - x1) < 50 and abs(midPointCoord[1] - y1) < 50) or (abs(midPointCoord[0] - x2) < 50 and abs(midPointCoord[1] - y2) < 50):
-            if y1 < midPointCoord[1]:
-                cv2.line(frame, (direction, midPointCoord[1]), (x2, y2), (0, 0, 255), 2)
-            elif y2 < midPointCoord[1]:
-                cv2.line(frame, (x1, y1), (direction, midPointCoord[1]), (0, 0, 255), 2) 
-            else: 
-                cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 2) 
- 
-def slopeCheck(x1, y1, x2, y2):
-    return round(abs(y1-y2)/abs(x1-x2), 2)
+#     #right
+#     elif (abs(refPointTwo[2] - x1) < 200 and abs(refPointTwo[3] - y1) < 200) or (abs(refPointTwo[2] - x2) < 200 and abs(refPointTwo[3] - y2) < 200):
+#         nearTrueMid(x1, y1, x2, y2, (0, 255, 255))
 
-#1 sucks, 2 is tentative, 3 is trash
+def nearTrueMid(x1, y1, x2, y2, colour):
+    currentLineSlope = slopeCheck(x1, y1, x2, y2)
+    if abs(midPointCoord[1] - y1) < 50 or abs(midPointCoord[1] - y2) < 50:
+        #right
+        if y1 < midPointCoord[1]:
+            if slopeCheck(x1 + int(currentLineSlope*abs(y1-midPointCoord[1])+int(frame.shape[1]/30)), midPointCoord[1], x2, y2) > 0.5:
+                cv2.line(frame, (x1 + int(currentLineSlope*abs(y1-midPointCoord[1])+int(frame.shape[1]/30)), midPointCoord[1]), (x2, y2), colour, 2)
+                print(x1, y1, x2, y2, slopeCheck(x1, y1, x2, y2))
+
+        #left
+        elif y2 < midPointCoord[1]:
+            if slopeCheck(x1, y1, x2 - int(currentLineSlope*abs(y2-midPointCoord[1])-int(frame.shape[1]/30)), midPointCoord[1]) > 0.5:   
+                cv2.line(frame, (x1, y1), (x2 - int(currentLineSlope*abs(y2-midPointCoord[1])+int(frame.shape[1]/30)), midPointCoord[1]), colour, 2) 
+                print(x1, y1, x2, y2, slopeCheck(x1, y1, x2, y2))
+
+def slopeCheck(x1, y1, x2, y2):
+    if math.isinf(round((y1-y2)/(x1-x2), 2)):
+        return 0
+    else:
+        return round(abs(y1-y2)/abs(x1-x2), 2)
+
+
+#1 pog, 2 is tentative, 3 is trash
 cap = cv2.VideoCapture('roadVideos/gitHubVideo1.mp4')
 
 while cap.isOpened():
@@ -35,8 +42,8 @@ while cap.isOpened():
     if ret:
         #theoretical perfect
         midPointCoord = [int(frame.shape[1]/2), int(frame.shape[0]/2)+int(frame.shape[0]/8), int(frame.shape[1]/2), int(frame.shape[0])]
-        refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/25), int(frame.shape[0]/2)+int(frame.shape[0]/8), int(frame.shape[1]/4), int(frame.shape[0])]
-        refPointTwo = [int(frame.shape[1]/2)+int(frame.shape[1]/25), int(frame.shape[0]/2)+int(frame.shape[0]/8), int(frame.shape[1]/4)*3, int(frame.shape[0])]
+        # refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/25), int(frame.shape[0]/2)+int(frame.shape[0]/8), int(frame.shape[1]/4), int(frame.shape[0])]
+        # refPointTwo = [int(frame.shape[1]/2)+int(frame.shape[1]/25), int(frame.shape[0]/2)+int(frame.shape[0]/8), int(frame.shape[1]/4)*3, int(frame.shape[0])]
 
         frame = cv2.GaussianBlur(frame, (7, 7), 0)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -45,19 +52,18 @@ while cap.isOpened():
 
         for line in lines:
             x1, y1, x2, y2 = line[0]
-            placeHolder = nearBy(x1, y1, x2, y2)
-            if placeHolder is not None:
-                print(x1, y1, x2, y2, placeHolder, slopeCheck(x1, y1, x2, y2))
-        
+            #nearBy(x1, y1, x2, y2)
+            nearTrueMid(x1, y1, x2, y2, (255, 0, 0))
+
         #reference area
         # cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (midPointCoord[2], midPointCoord[3]), (255, 0, 0), 1)
         # cv2.line(frame, (refPointOne[0], refPointOne[1]), (refPointOne[2], refPointOne[3]), (0, 255, 0), 1)
         # cv2.line(frame, (refPointTwo[0], refPointTwo[1]), (refPointTwo[2], refPointTwo[3]), (0, 255, 0), 1)
 
-        frame = cv2.resize(frame, dsize = (500, 500))
+        #frame = cv2.resize(frame, dsize = (500, 500))
         cv2.imshow("Road Detection", frame)
 
-        if cv2.waitKey(100) & 0xFF == ord('q'):
+        if cv2.waitKey(10) & 0xFF == ord('q'):
             break
     else:
         break
