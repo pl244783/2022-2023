@@ -29,6 +29,7 @@ def nearTrueMid(x1, y1, x2, y2, colour):
                 print(x1, y1, x2, y2, slopeCheck(x1, y1, x2, y2))
         
         #clean this out in the next iteration
+        #can't clean out
         else:
             if slopeCheck(x1, y1, x2, y2) > 0.5:
                 cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
@@ -42,7 +43,7 @@ def slopeCheck(x1, y1, x2, y2):
 
 #1 pog, 2 is tentative, 3 is trash - github
 #4 home
-cap = cv2.VideoCapture('roadVideos/homeVideo5.mp4')
+cap = cv2.VideoCapture('roadVideos/gitHubVideo1.mp4')
 
 while cap.isOpened():
     ret, frame = cap.read()
