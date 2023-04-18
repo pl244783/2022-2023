@@ -19,22 +19,16 @@ def nearTrueMid(x1, y1, x2, y2, colour):
         #right
         if y1 < midPointCoord[1]:
             if slopeCheck(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2, y2) > 0.5:
-                cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2, y2), colour, 2)
-                #print(x1, y1, x2, y2, slopeCheck(x1, y1, x2, y2))
-                return(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2, y2)
+                cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
+                print((x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), slopeCheck(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]))
+                return(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
 
         #left
         elif y2 < midPointCoord[1]:
             if slopeCheck(x1, y1, x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]) > 0.5:
-                cv2.line(frame, (x1, y1), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
-                #print(x1, y1, x2, y2, slopeCheck(x1, y1, x2, y2))
-                return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x1, y1)
-        
-        #clean this out in the next iteration
-        #can't clean out
-        # else:
-        #     if slopeCheck(x1, y1, x2, y2) > 0.5:
-        #         cv2.line(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
+                cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
+                print(x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3], slopeCheck(x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]))
+                return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
 
 def slopeCheck(x1, y1, x2, y2):
     if math.isinf(round(abs(y1-y2)/abs(x1-x2), 2)):
@@ -46,7 +40,7 @@ def tempCheck(temp):
     real = True
     if temp is not None and len(frameArray) == 1:
         for value in range(0, len(frameArray), 2):
-            if abs(int(frameArray[0][value]) - int(temp[value])) > frame.shape[0]/10:
+            if abs(int(frameArray[0][value]) - int(temp[value])) > frame.shape[1]/20:
                 pass
             else:
                 real = False
@@ -57,11 +51,10 @@ def tempCheck(temp):
 
 #1 pog, 2 is tentative, 3 is trash - github
 #4 home
-cap = cv2.VideoCapture('roadVideos/gitHubVideo1.mp4')
+cap = cv2.VideoCapture('roadVideos/gitHubVideo2.mp4')
 
 while cap.isOpened():
     ret, frame = cap.read()
-
     if ret:
         #theoretical perfect
         midPointCoord = [int(frame.shape[1]/2), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/2), int(frame.shape[0])]
@@ -88,8 +81,6 @@ while cap.isOpened():
             x1, y1, x2, y2 = x1/len(frameArray), y1/len(frameArray), x2/len(frameArray), y2/len(frameArray)
             cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
 
-        print(frameArray, '\t', (x1, y1, x2, y2))
-
         #reference area
         # cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (midPointCoord[2], midPointCoord[3]), (255, 0, 0), 1)
         # cv2.line(frame, (refPointOne[0], refPointOne[1]), (refPointOne[2], refPointOne[3]), (0, 255, 0), 1)
@@ -99,7 +90,7 @@ while cap.isOpened():
         frame = cv2.resize(frame, dsize = (900, 600))
         cv2.imshow("Road Detection", frame)
 
-        if cv2.waitKey(100) & 0xFF == ord('q'):
+        if cv2.waitKey(10) & 0xFF == ord('q'):
             break
     else:
         break
