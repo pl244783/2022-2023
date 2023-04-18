@@ -49,7 +49,7 @@ def tempCheck(temp):
 
 #1 pog, 2 is tentative, 3 is trash - github
 #4 home
-cap = cv2.VideoCapture('roadVideos/gitHubVideo2.mp4')
+cap = cv2.VideoCapture('roadVideos/gitHubVideo1.mp4')
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -79,7 +79,8 @@ while cap.isOpened():
             x1, y1, x2, y2 = x1/len(frameArray), y1/len(frameArray), x2/len(frameArray), y2/len(frameArray)
             cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
 
-        print(frameArray)
+        if len(frameArray) > 0:
+            print(frameArray, '\t', (x1, y1, x2, y2))
 
         #reference area
         # cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (midPointCoord[2], midPointCoord[3]), (255, 0, 0), 1)
