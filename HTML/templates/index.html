@@ -20,32 +20,6 @@
 
     <div class="downL">
       Section 3
-      <button onclick="movingFunc('forward', '/static/forward.png')">Forward</button>
-      <button onclick="movingFunc('backward', '/static/backward.png')">Backward</button>
-      <button onclick="movingFunc('right', '/static/right.png')">Right</button>
-      <button onclick="movingFunc('left', '/static/left.png')">Left</button>
-      <script>
-        function movingFunc(movingVar, imageSrc) {
-          fetch(movingVar)
-            .then((response) => response.json())
-            .then((data) => console.log(data));
-
-          var overlayImage = document.getElementById('overlay-image');
-          overlayImage.src = imageSrc;
-        }
-      </script>
-
-      <button onclick="funny()">Other</button>
-      <script>
-        function funny() {
-          fetch("forward");
-          fetch("right");
-          fetch("forward");
-          fetch("left")
-            .then((response) => response.json())
-            .then((data) => console.log(data));
-        }
-      </script>
     </div>
 
     <div class="downR">
