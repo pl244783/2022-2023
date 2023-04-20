@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, redirect, session
 import logging
+import hashlib
+import sqlite3
 
 app = Flask(__name__)
-#robot = Robot()
 app.secret_key = 'your-secret-key-here'
-
-#run flask run --host=0.0.0.0
 
 class ExcludeFilter(logging.Filter):
     def filter(self, record):
@@ -18,7 +17,26 @@ handler.addFilter(ExcludeFilter())
 formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
- 
+
+# Initialize the database
+def init_db():
+    conn = sqlite3.connect('HTMLFiles/static/user_data.db')
+    c = conn.cursor()
+
+    # Create the users table if it doesn't exist
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE,
+            password TEXT
+        )
+    ''')
+
+    conn.commit()
+    conn.close()
+
+init_db()
+
 @app.route('/')
 def index():
     if 'username' in session:
@@ -31,15 +49,20 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        with open('static/userFiles.txt', 'r') as f:
-            for line1, line2 in zip(f, f):
-                if username == line1.strip('\n') and password == line2.strip('\n'):
-                    session['username'] = username
-                    return redirect('/')
+
+        # Check if the username and password match
+        conn = sqlite3.connect('HTMLFiles/static/user_data.db')
+        c = conn.cursor()
+        c.execute('SELECT * FROM users WHERE username=? AND password=?', (hashlib.sha256(username.encode()).hexdigest(), hashlib.sha256(password.encode()).hexdigest()))
+        result = c.fetchone()
+        conn.close()
+
+        if result:
+            session['username'] = result[1]
+            return redirect('/')
     
     return render_template('login.html')
     
-# new registration route
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -47,22 +70,23 @@ def register():
         password = request.form['password']
         validUsername = True
 
-        with open('static/userFiles.txt', 'r') as d:
-            counter = 1
-            for i in d:
-                if counter%2 == 1:
-                    print(i)
-                    print(username)
-                    if username == i.strip('\n'):
-                        validUsername = False        
-                counter += 1
-        d.close()
-            
-        if validUsername:
-            with open('static/userFiles.txt', 'a') as f:
-                f.write(username + '\n' + password + '\n')
+        # Check if the username is available
+        conn = sqlite3.connect('HTMLFiles/static/user_data.db')
+        c = conn.cursor()
+        c.execute('SELECT * FROM users WHERE username=?', (username,))
+        result = c.fetchone()
 
-                return redirect('/login') 
+        if result:
+            validUsername = False
+        else:
+            # Insert the new user into the database
+            c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (hashlib.sha256(username.encode()).hexdigest(), hashlib.sha256(password.encode()).hexdigest()))
+            conn.commit()
+
+        conn.close()
+
+        if validUsername:
+            return redirect('/login') 
         else: 
             return render_template('register.html')
     else: 
