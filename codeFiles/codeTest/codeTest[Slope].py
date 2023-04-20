@@ -43,7 +43,7 @@ def slopeCheck(x1, y1, x2, y2):
 
 #1 pog, 2 is tentative, 3 is trash - github
 #4 home
-cap = cv2.VideoCapture('roadVideos/gitHubVideo1.mp4')
+cap = cv2.VideoCapture('codeFiles/roadVideos/gitHubVideo1.mp4')
 
 while cap.isOpened():
     ret, frame = cap.read()

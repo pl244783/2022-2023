@@ -22,7 +22,7 @@ def nearTrueMid(x1, y1, x2, y2, direction):
  
 
 #1 sucks, 2 is tentative, 3 is trash
-cap = cv2.VideoCapture('roadVideos/homeVideo5.mp4')
+cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo5.mp4')
 
 while cap.isOpened():
     ret, frame = cap.read()

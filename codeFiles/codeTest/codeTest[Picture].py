@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 #all Github imgs work
-img = cv2.imread('roadPictures/gitHubPhoto3.jpg')
+img = cv2.imread('codeFiles/roadPictures/gitHubPhoto3.jpg')
 img = cv2.GaussianBlur(img, (5, 5), 0)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray, 120, 200, apertureSize=3)
