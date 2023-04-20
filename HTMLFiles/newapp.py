@@ -94,6 +94,20 @@ def register():
             return render_template('register.html')
     else: 
         return render_template('register.html')
+    
+def gen_frames():
+        cap = cv2.VideoCapture('codeFiles/roadVideos/gitHubVideo1.mp4')
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if ret:
+                _, buffer = cv2.imencode('.jpg', frame)
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 if __name__=='__main__':
     app.run(host="0.0.0.0", port=8888, threaded=True, debug=True)

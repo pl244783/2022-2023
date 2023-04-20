@@ -1,5 +1,5 @@
 .body {
-    background: rgb(0, 174, 255);
+    background: rgb(200, 200, 200);
     display: grid;
     height: 100rem;
     width: 100%;
@@ -12,31 +12,32 @@
 .topL {
     font-family: Verdana, Geneva, sans-serif;
     font-size: 2.5em;
-    color: FireBrick;
-    background-color: antiquewhite;
+    color: rgb(0, 0, 0);
+    background-color: rgb(238, 238, 238);
     overflow: auto;
     }
    
 .topR {
-    font-family: Georgia, serif;
-    font-size: 2.5em;
-    color: rgb(255, 251, 0);
-    background-color: blue;
-    overflow: auto;
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 2.5em;
+  color: rgb(0, 0, 0);
+  background-color: rgb(238, 238, 238);
+  overflow: auto;
     }
 
 .downL{
-  font-family: Georgia, serif;
+  font-family: Verdana, Geneva, sans-serif;
   font-size: 2.5em;
-  background-color:aqua;
+  color: rgb(0, 0, 0);
+  background-color: rgb(238, 238, 238);
   overflow: auto;
   }
 
 .downR{
-  font-family: Georgia, serif;
-  background-color: blueviolet;
+  font-family: Verdana, Geneva, sans-serif;
   font-size: 2.5em;
-  color:rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  background-color: rgb(238, 238, 238);
   overflow: auto;
 }
 
