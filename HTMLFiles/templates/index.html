@@ -17,7 +17,7 @@
     </div> -->
 
     <div class="topL">
-      Section 2
+      Video
       <div id="video-container">
         <img id="video-frame" src="{{ url_for('video_feed') }}" width="100%">
       </div>
@@ -28,7 +28,7 @@
               img.src = "{{ url_for('video_feed') }}?rand=" + Math.random();
           }
       
-          setInterval(reloadImage, 9000); // Reload the image every 1 second
+          setInterval(reloadImage, 8000); // Reload the image every 1 second
       </script>
     </div>
 
@@ -37,7 +37,7 @@
     </div> -->
 
     <div class="downR">
-      Section 4<br>
+      Log<br>
       <iframe id="log" src="/static/logFile.html" width="800" height="500" type="html/text" style="margin-top: 15px;">
         Not supported
       </iframe>
