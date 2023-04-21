@@ -179,6 +179,8 @@ def gen_frames():
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+#-----------------------------------------------------------------------------
+
 def nonEdited(img):
     image = cv2.imread(img)
     _, buffer = cv2.imencode('.jpg', image)
@@ -236,6 +238,8 @@ def edited(image):
 def imaging():
     image = request.args.get('image', type=str)
     return Response(edited(image), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+# ---------------------------------------------------------------------
 
 if __name__=='__main__':
     app.run(host="0.0.0.0", port=8888, threaded=True, debug=True)
