@@ -141,13 +141,8 @@ def gen_frames():
                 return temp
         elif temp is not None and len(frameArray) == 0:
             return temp
-<<<<<<< HEAD:HTMLFiles/app.py
     
     cap = cv2.VideoCapture('codeFiles/roadVideos/gitHubVideo1.mp4')
-=======
-
-    cap = cv2.VideoCapture('roadVideos/gitHubVideo1.mp4')
->>>>>>> a6e363fcaea2dadd139662a713dea277805a4024:app.py
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
