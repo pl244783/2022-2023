@@ -8,16 +8,17 @@
     <link rel="stylesheet" href="/static/main.css" />
   </head>
   <div class="body">
-    <!-- <div class="topR">
-      Section 1
-      <video id="video" width="640" height="480" autoplay>
-        <source src="/video_feed" type="multipart/x-mixed-replace; boundary=frame">
-      </video>
-      <img id="overlay-image" src="">
-    </div> -->
+    <div class="topR">
+      Photos <br>
+      <img src='/codeFiles/roadPictures/gitHubPhoto1.jpeg', width = 100%>
+    </div>
 
     <div class="topL">
-      Video
+      Edited Photos
+    </div>
+
+    <div class="downL">
+      Straight Line Video
       <div id="video-container">
         <img id="video-frame" src="{{ url_for('video_feed') }}" width="100%">
       </div>
@@ -28,13 +29,9 @@
               img.src = "{{ url_for('video_feed') }}?rand=" + Math.random();
           }
       
-          setInterval(reloadImage, 8000); // Reload the image every 1 second
+          setInterval(reloadImage, 8000); // Reload the image every 8 second
       </script>
     </div>
-
-    <!-- <div class="downL">
-      Section 3
-    </div> -->
 
     <div class="downR">
       Log<br>
