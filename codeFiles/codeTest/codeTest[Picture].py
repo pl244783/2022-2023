@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 #all Github imgs work
-img = cv2.imread('codeFiles/roadPictures/gitHubPhoto3.jpg')
+img = cv2.imread('codeFiles/roadPictures/gitHubPhoto1.jpg')
 img = cv2.GaussianBlur(img, (5, 5), 0)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 edges = cv2.Canny(gray, 120, 200, apertureSize=3)
@@ -37,7 +37,6 @@ def nearTrueMid(x1, y1, x2, y2, direction):
 for line in lines:
     x1, y1, x2, y2 = line[0]
     nearBy(x1, y1, x2, y2)
-    print(x1, x2, y1, y2)
 
 #reference area
 # cv2.line(img, (midPointCoord[0], midPointCoord[1]), (midPointCoord[2], midPointCoord[3]), (255, 0, 0), 1)

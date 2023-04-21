@@ -8,16 +8,22 @@
     <link rel="stylesheet" href="/static/main.css" />
   </head>
   <div class="body">
-    <!-- <div class="topR">
-      Section 1
-      <video id="video" width="640" height="480" autoplay>
-        <source src="/video_feed" type="multipart/x-mixed-replace; boundary=frame">
-      </video>
-      <img id="overlay-image" src="">
-    </div> -->
+    <div class="topR">
+      Non Edited Photos
+      <img id = "NonEdited" src ="{{ url_for('image', img = 'codeFiles/roadPictures/gitHubPhoto1.jpg') }}", width="100%">
+      <img id = "NonEdited2" src ="{{ url_for('image', img = 'codeFiles/roadPictures/gitHubPhoto2.jpg') }}", width="100%">
+      <img id = "NonEdited3" src ="{{ url_for('image', img = 'codeFiles/roadPictures/gitHubPhoto3.jpg') }}", width="100%">
+    </div>
 
     <div class="topL">
-      Video
+      Edited Photos
+      <img id = "Edited" src ="{{ url_for('imaging', image = 'codeFiles/roadPictures/gitHubPhoto1.jpg') }}", width="100%">
+      <img id = "Edited2" src ="{{ url_for('imaging', image = 'codeFiles/roadPictures/gitHubPhoto2.jpg') }}", width="100%">
+      <img id = "Edited3" src ="{{ url_for('imaging', image = 'codeFiles/roadPictures/gitHubPhoto3.jpg') }}", width="100%">
+    </div>
+
+    <div class="downL">
+      Straight Line Video 
       <div id="video-container">
         <img id="video-frame" src="{{ url_for('video_feed') }}" width="100%">
       </div>
@@ -31,10 +37,6 @@
           setInterval(reloadImage, 8000); // Reload the image every 1 second
       </script>
     </div>
-
-    <!-- <div class="downL">
-      Section 3
-    </div> -->
 
     <div class="downR">
       Log<br>
