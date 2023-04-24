@@ -12,8 +12,7 @@ app.secret_key = 'your-secret-key-here'
 class ExcludeFilter(logging.Filter):
     def filter(self, record):
         message = record.getMessage()
-        return "GET /static/logFile.html" not in message and "GET /video_feed" not in message and "GET /image?" not in message and "GET /imaging?" not in message
-
+        return "GET /static/" not in message and "GET /video_feed" not in message and "GET /image?" not in message and "GET /imaging?" not in message
 logger = logging.getLogger()
 handler = logging.FileHandler('HTMLFiles/static/logFile.html', 'w')
 handler.setLevel(logging.INFO)
