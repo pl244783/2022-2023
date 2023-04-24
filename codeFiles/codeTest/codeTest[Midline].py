@@ -49,7 +49,7 @@ def tempCheck(temp):
 
 #1 pog, 2 is tentative, 3 is trash - github
 #4 home
-cap = cv2.VideoCapture('/roadPictures/homePhoto2.jpg')
+cap = cv2.VideoCapture('/roadPictures/homePhoto2.mp4')
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -91,7 +91,7 @@ while cap.isOpened():
         #frame = cv2.resize(frame, dsize = (900, 600))
         cv2.imshow("Road Detection", frame)
 
-        if cv2.waitKey(0) & 0xFF == ord('q'):
+        if cv2.waitKey(10) & 0xFF == ord('q'):
             break
     else:
         break
