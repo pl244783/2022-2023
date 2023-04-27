@@ -43,7 +43,7 @@ def slopeCheck(x1, y1, x2, y2):
 
 #1 pog, 2 is tentative, 3 is trash - github
 #4 home
-cap = cv2.VideoCapture('codeFiles/roadVideos/gitHubVideo1.mp4')
+cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo6.mp4')
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -54,7 +54,7 @@ while cap.isOpened():
         refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/25), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4), int(frame.shape[0])]
         refPointTwo = [int(frame.shape[1]/2)+int(frame.shape[1]/25), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4)*3, int(frame.shape[0])]
 
-        frame = cv2.GaussianBlur(frame, (7, 7), 0)
+        #frame = cv2.GaussianBlur(frame, (7, 7), 0)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(gray, 120, 200, apertureSize=3)
         lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=0, maxLineGap=frame.shape[1])
