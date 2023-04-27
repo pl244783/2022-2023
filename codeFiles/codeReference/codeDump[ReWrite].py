@@ -73,7 +73,7 @@ while cap.isOpened():
             else:
                 if slopeCheck(x1, y1, x2, y2) > 0.5 and slopeCheck(x1, y1, x2, y2) < 1.5:
                     cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
-                pass
+            #______________________________________________________________-------------------------------------------------------______
             temp = tempCheck(nearBy(x1, y1, x2, y2))
             if temp is not None:
                 frameArray.append(temp)
