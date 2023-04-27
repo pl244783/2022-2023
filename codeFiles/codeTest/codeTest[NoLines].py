@@ -12,8 +12,9 @@ def nearBy(x1, y1, x2, y2):
     elif (abs(refPointTwo[2] - x1) < frame.shape[0]/5 and abs(refPointTwo[3] - y1) < frame.shape[0]/5) or (abs(refPointTwo[2] - x2) < frame.shape[0]/5 and abs(refPointTwo[3] - y2) < frame.shape[0]/5):
         return nearTrueMid(x1, y1, x2, y2, (0, 0, 255))
 
+
 def nearTrueMid(x1, y1, x2, y2, colour):
-    #cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
+    cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
     if (abs(midPointCoord[0] - x1) < frame.shape[0]/5 and abs(midPointCoord[1] - y1) < frame.shape[0]/5)or (abs(midPointCoord[0] - x2) < frame.shape[0]/5 and abs(midPointCoord[1] - y2) < frame.shape[0]/5):
         currentLineSlope = slopeCheck(x1, y1, x2, y2)
         #right
@@ -59,7 +60,7 @@ while cap.isOpened():
         refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/25), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4), int(frame.shape[0])]
         refPointTwo = [int(frame.shape[1]/2)+int(frame.shape[1]/25), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4)*3, int(frame.shape[0])]
 
-        frame = cv2.GaussianBlur(frame, (7, 7), 0)
+        #frame = cv2.GaussianBlur(frame, (7, 7), 0)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(gray, 120, 200, apertureSize=3)
         lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=0, maxLineGap=frame.shape[1])
@@ -80,7 +81,11 @@ while cap.isOpened():
             cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
 
         if len(frameArray) > 0:
-            print(frameArray, '\t', (x1, y1, x2, y2))
+            #print(frameArray, '\t', (x1, y1, x2, y2))
+            print('forwards')
+            pass
+        else:
+            print('not forwards')
 
         #reference area
         # cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (midPointCoord[2], midPointCoord[3]), (255, 0, 0), 1)
