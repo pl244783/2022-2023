@@ -39,14 +39,12 @@ def nearTrueMid(x1, y1, x2, y2, colour):
         if y1 < midPointCoord[1]:
             if currentLineSlope > 0.5 and currentLineSlope < 1:
                 cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
-                print(currentLineSlope)
                 return(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
 
         #left
         elif y2 < midPointCoord[1]:
             if currentLineSlope > 0.5 and currentLineSlope < 1:
                 cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
-                print(currentLineSlope)
                 return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
 
 cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo6.mp4')
@@ -65,24 +63,24 @@ while cap.isOpened():
         lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=0, maxLineGap=frame.shape[1])
 
         frameArray = []
-
+        totalLines = 0 
         for line in lines:
             x1, y1, x2, y2 = line[0]
-            if ((midPointCoord[1] - y1) > 0) and ((midPointCoord[1] - y2) > 0) and (slopeCheck(x1, y1, x2, y2) > 0.5) and slopeCheck(x1, y1, x2, y2) < 1:
-                cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
             if slopeCheck(x1, y1, x2, y2) > 0.5 and slopeCheck(x1, y1, x2, y2) < 1.5 :
                 colour = (255, 255, 0)
                 currentLineSlope = slopeCheck(x1, y1, x2, y2)
                 if y1 < midPointCoord[1] and (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope)) > midPointCoord[0] and (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope)) > midPointCoord[0]:
                     if currentLineSlope > 0.5 and currentLineSlope < 1:
                         cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
-                        print(currentLineSlope)
+                        lines += 1
+                        #print(currentLineSlope)
 
                 #left
                 elif y2 < midPointCoord[1] and (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope)) < midPointCoord[0] and (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope)) < midPointCoord[0]:
                     if currentLineSlope > 0.5 and currentLineSlope < 1:
                         cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
-                        print(currentLineSlope)
+                        totalLines += 1
+                        #print(currentLineSlope)
 
             # #______________________________________________________________-------------------------------------------------------______
             temp = tempCheck(nearBy(x1, y1, x2, y2))
@@ -95,6 +93,21 @@ while cap.isOpened():
         if len(frameArray) == 2:
             x1, y1, x2, y2 = x1/len(frameArray), y1/len(frameArray), x2/len(frameArray), y2/len(frameArray)
             cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+
+        if totalLines > 2:
+            print('going forwards')
+        else:
+            height, width, channels = frame.shape
+            half_width = width // 2
+            left_half = frame[:, :half_width]
+            right_half = frame[:, half_width:]
+            left_noise = cv2.meanStdDev(cv2.cvtColor(left_half, cv2.COLOR_BGR2GRAY))[1][0][0]
+            right_noise = cv2.meanStdDev(cv2.cvtColor(right_half, cv2.COLOR_BGR2GRAY))[1][0][0]
+            if left_noise < right_noise:
+                print("Probably Turning Left")
+            else:
+                print("Probable Turning Right")
+
 
         # if len(frameArray) > 0:
         #     #print(frameArray, '\t', (x1, y1, x2, y2))
