@@ -5,11 +5,11 @@ import math
 # #I don't know why my program needs this function, but when I try to delete it, it doesn't work anymore
 def nearBy(x1, y1, x2, y2):
     #left
-    if (abs(refPointOne[2] - x1) < frame.shape[1]/4 and abs(refPointOne[3] - y1) < frame.shape[0]/10) or (abs(refPointOne[2] - x2) < frame.shape[1]/4 and abs(refPointOne[3] - y2) < frame.shape[0]/10):
+    if (abs(refPointOne[2] - x1) < frame.shape[1]/5 and abs(refPointOne[3] - y1) < frame.shape[0]/5) or (abs(refPointOne[2] - x2) < frame.shape[1]/5 and abs(refPointOne[3] - y2) < frame.shape[0]/5):
         return nearTrueMid(x1, y1, x2, y2, (0, 0, 255))
     
     #right
-    elif (abs(refPointTwo[2] - x1) < frame.shape[1]/4 and abs(refPointTwo[3] - y1) < frame.shape[0]/10) or (abs(refPointTwo[2] - x2) < frame.shape[1]/4 and abs(refPointTwo[3] - y2) < frame.shape[0]/10):
+    elif (abs(refPointTwo[2] - x1) < frame.shape[1]/5 and abs(refPointTwo[3] - y1) < frame.shape[0]/5) or (abs(refPointTwo[2] - x2) < frame.shape[1]/5 and abs(refPointTwo[3] - y2) < frame.shape[0]/5):
         return nearTrueMid(x1, y1, x2, y2, (255, 0, 0))
 
 def slopeCheck(x1, y1, x2, y2):
@@ -32,19 +32,19 @@ def tempCheck(temp):
         return temp
 
 def nearTrueMid(x1, y1, x2, y2, colour):
-    cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (int(midPointCoord[0] + frame.shape[1]/8), int(midPointCoord[1]+frame.shape[0]/8)), (255, 0, 0), 2)
+    #cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (int(midPointCoord[0] + frame.shape[1]/8), int(midPointCoord[1]+frame.shape[0]/8)), (255, 0, 0), 2)
     if (abs(midPointCoord[0] - x1) < frame.shape[1]/6 and abs(midPointCoord[1] - y1) < frame.shape[0]/6) or (abs(midPointCoord[0] - x2) < frame.shape[1]/6 and abs(midPointCoord[1] - y2) < frame.shape[1]/6):
         currentLineSlope = slopeCheck(x1, y1, x2, y2)
         #right
         if y1 < midPointCoord[1]:
-            if currentLineSlope > 0.5 and currentLineSlope < 0.9:
+            if currentLineSlope > 0.5 and currentLineSlope < 1:
                 cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
                 print(currentLineSlope)
                 return(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
 
         #left
         elif y2 < midPointCoord[1]:
-            if currentLineSlope > 0.5 and currentLineSlope < 0.9:
+            if currentLineSlope > 0.5 and currentLineSlope < 1:
                 cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
                 print(currentLineSlope)
                 return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
@@ -68,8 +68,22 @@ while cap.isOpened():
 
         for line in lines:
             x1, y1, x2, y2 = line[0]
-            #nearTrueMid(x1, y1, x2, y2, (255, 255, 0))
-            #nearBy(x1, y1, x2, y2)
+            if ((midPointCoord[1] - y1) > 0) and ((midPointCoord[1] - y2) > 0) and (slopeCheck(x1, y1, x2, y2) > 0.5) and slopeCheck(x1, y1, x2, y2) < 1:
+                cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
+            if slopeCheck(x1, y1, x2, y2) > 0.5 and slopeCheck(x1, y1, x2, y2) < 1.5 :
+                colour = (255, 255, 0)
+                currentLineSlope = slopeCheck(x1, y1, x2, y2)
+                if y1 < midPointCoord[1] and (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope)) > midPointCoord[0] and (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope)) > midPointCoord[0]:
+                    if currentLineSlope > 0.5 and currentLineSlope < 1:
+                        cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
+                        print(currentLineSlope)
+
+                #left
+                elif y2 < midPointCoord[1] and (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope)) < midPointCoord[0] and (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope)) < midPointCoord[0]:
+                    if currentLineSlope > 0.5 and currentLineSlope < 1:
+                        cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
+                        print(currentLineSlope)
+
             # #______________________________________________________________-------------------------------------------------------______
             temp = tempCheck(nearBy(x1, y1, x2, y2))
             if temp is not None:
