@@ -46,6 +46,7 @@ def nearTrueMid(x1, y1, x2, y2, colour):
             if currentLineSlope > 0.5 and currentLineSlope < 1:
                 cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
                 return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
+            
 
 cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo6.mp4')
 
@@ -57,30 +58,30 @@ while cap.isOpened():
         refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/20), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4), int(frame.shape[0])]
         refPointTwo = [int(frame.shape[1]/2)+int(frame.shape[1]/20), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4)*3, int(frame.shape[0])]
 
-        #frame = cv2.GaussianBlur(frame, (7, 7), 0)
+        #frame = cv2.GaussianBlur(frame, (3, 3), 0)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        edges = cv2.Canny(gray, 50, 250, apertureSize=3)
+        edges = cv2.Canny(gray, 50, 250, apertureSize=3, L2gradient = True)
         lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=0, maxLineGap=frame.shape[1])
 
         frameArray = []
         totalLines = 0 
         for line in lines:
             x1, y1, x2, y2 = line[0]
-            if slopeCheck(x1, y1, x2, y2) > 0.5 and slopeCheck(x1, y1, x2, y2) < 1.5 :
+            if slopeCheck(x1, y1, x2, y2) > 0.5 and slopeCheck(x1, y1, x2, y2) < 1.5:
+                #cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
                 colour = (255, 255, 0)
                 currentLineSlope = slopeCheck(x1, y1, x2, y2)
-                if y1 < midPointCoord[1] and (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope)) > midPointCoord[0] and (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope)) > midPointCoord[0]:
-                    if currentLineSlope > 0.5 and currentLineSlope < 1:
-                        cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
-                        lines += 1
-                        #print(currentLineSlope)
+                if y1 < midPointCoord[1]:
+                    cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
+                    totalLines += 1
+                    #print(currentLineSlope)
 
                 #left
-                elif y2 < midPointCoord[1] and (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope)) < midPointCoord[0] and (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope)) < midPointCoord[0]:
-                    if currentLineSlope > 0.5 and currentLineSlope < 1:
-                        cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
-                        totalLines += 1
-                        #print(currentLineSlope)
+                elif y2 < midPointCoord[1]:
+                    cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
+                    totalLines += 1
+                    #print(currentLineSlope)
+
 
             # #______________________________________________________________-------------------------------------------------------______
             temp = tempCheck(nearBy(x1, y1, x2, y2))
@@ -94,19 +95,28 @@ while cap.isOpened():
             x1, y1, x2, y2 = x1/len(frameArray), y1/len(frameArray), x2/len(frameArray), y2/len(frameArray)
             cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
 
-        if totalLines > 2:
+        #------------------------------------------------------------------------------------------------------------------------------
+
+        if totalLines > 3:
             print('going forwards')
+            #has to cross 5 to
         else:
             height, width, channels = frame.shape
             half_width = width // 2
-            left_half = frame[:, :half_width]
-            right_half = frame[:, half_width:]
-            left_noise = cv2.meanStdDev(cv2.cvtColor(left_half, cv2.COLOR_BGR2GRAY))[1][0][0]
-            right_noise = cv2.meanStdDev(cv2.cvtColor(right_half, cv2.COLOR_BGR2GRAY))[1][0][0]
+            leftHalf = frame[:, :half_width]
+            rightHalf = frame[:, half_width:]
+
+            # Calculate the noise level of each bottom quarter
+            left_noise = cv2.meanStdDev(cv2.cvtColor(leftHalf, cv2.COLOR_BGR2GRAY))[1][0][0]
+            right_noise = cv2.meanStdDev(cv2.cvtColor(rightHalf, cv2.COLOR_BGR2GRAY))[1][0][0]
+
+            # Print the side with less noise
             if left_noise < right_noise:
-                print("Probably Turning Left")
+                print("LEFT LFT LFT LFT LEFTTTT")
             else:
-                print("Probable Turning Right")
+                print("Right")
+            #get line detector working and then I just draw a line from my corner to th enext end 
+            #or go from everything to the left of the detected lane and to the right of the other one
 
 
         # if len(frameArray) > 0:
@@ -125,7 +135,7 @@ while cap.isOpened():
         frame = cv2.resize(frame, dsize = (900, 600))
         cv2.imshow("Road Detection", frame)
 
-        if cv2.waitKey(10) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     else:
         break
