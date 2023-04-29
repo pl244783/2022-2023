@@ -13,8 +13,10 @@ def nearBy(x1, y1, x2, y2):
         return nearTrueMid(x1, y1, x2, y2, (255, 0, 0))
 
 def slopeCheck(x1, y1, x2, y2):
-    if abs(x1-x2) < 0.001 or math.isinf(round(abs(y1-y2)/abs(x1-x2), 2)) or abs(round(abs(y1-y2)/abs(x1-x2), 2)) < 0.001 :
+    if math.isinf(round(abs(y1-y2)/abs(x1-x2), 2)):
         return 10000
+    elif abs(round(abs(y1-y2)/abs(x1-x2), 2)) < 0.01:
+        return 100
     else:
         return round(abs(y1-y2)/abs(x1-x2), 2)
 
@@ -49,11 +51,12 @@ def nearTrueMid(x1, y1, x2, y2, colour):
             
 
 cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo6.mp4')
-unlock, lock = 10, 0
+lock, totalFrames = 0, 0
 
 while cap.isOpened():
     ret, frame = cap.read()
     if ret:
+        frameCounted = False
         #theoretical perfect
         midPointCoord = [int(frame.shape[1]/2), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/2), int(frame.shape[0])]
         refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/20), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4), int(frame.shape[0])]
@@ -68,10 +71,10 @@ while cap.isOpened():
         totalLines = 0 
         for line in lines:
             x1, y1, x2, y2 = line[0]
-            if slopeCheck(x1, y1, x2, y2) > 0.5 and slopeCheck(x1, y1, x2, y2) < 1.2:
-                #cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
+            currentLineSlope = slopeCheck(x1, y1, x2, y2)
+            if currentLineSlope > 0.5 and currentLineSlope < 1.2:
+                cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
                 colour = (255, 255, 0)
-                currentLineSlope = slopeCheck(x1, y1, x2, y2)
 
                 #right
                 if y1 < midPointCoord[1] and x1 + int(abs(y1-midPointCoord[1])/currentLineSlope) > midPointCoord[0] and x2 + int(abs(y2-midPointCoord[3])/currentLineSlope) > midPointCoord[0]:
@@ -88,7 +91,10 @@ while cap.isOpened():
                         cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
                         totalLines += 1
                     #print(currentLineSlope)
-
+            
+            elif currentLineSlope == 100 and y1 > midPointCoord[1]:
+                #cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
+                frameCounted = True
 
             # #______________________________________________________________-------------------------------------------------------______
             temp = tempCheck(nearBy(x1, y1, x2, y2))
@@ -104,31 +110,28 @@ while cap.isOpened():
 
         #------------------------------------------------------------------------------------------------------------------------------
 
-        if totalLines > 3:
-            print('going forwards')
-            unlock += 1
-            if unlock == 10:
-                lock = 0
-            #has to cross 5 to
+        if frameCounted:
+            totalFrames += 1
         else:
-            height, width, channels = frame.shape
-            half_width = width // 2
-            leftHalf = frame[:, :half_width]
-            rightHalf = frame[:, half_width:]
+            totalFrames = 0
+        if totalFrames >= 3:
+            lock = 5
 
-            # Calculate the noise level of each bottom quarter
-            left_noise = cv2.meanStdDev(cv2.cvtColor(leftHalf, cv2.COLOR_BGR2GRAY))[1][0][0]
-            right_noise = cv2.meanStdDev(cv2.cvtColor(rightHalf, cv2.COLOR_BGR2GRAY))[1][0][0]
+        if totalLines > 3:
+            if lock > 0:
+                lock -= 1
+                print('probably turning')
+            else:
+                print('going forwards')
+        else:
+            if lock > 0:
+                lock = 5
+                print('probably turning')
+            else:
+                print('going forwards')
+    
 
-            # Print the side with less noise
-            if left_noise < right_noise and lock == 0:
-                print("right")
-                #lock = 1
-                unlock = 0
-            elif right_noise < left_noise and lock == 0:
-                print("LEFT LEFT LEFT LEFT LEFT LEFT")
-                #lock = 2
-                unlock = 0
+            
 
             # if lock == 1:
             #     print('right')
@@ -148,7 +151,7 @@ while cap.isOpened():
         #     print('not forwards')
 
         # #reference area
-        # cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (midPointCoord[2], midPointCoord[3]), (255, 0, 0), 1)
+        cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (midPointCoord[2], midPointCoord[3]), (255, 0, 0), 5)
         # cv2.line(frame, (refPointOne[0], refPointOne[1]), (refPointOne[2], refPointOne[3]), (0, 255, 0), 1)
         # cv2.line(frame, (refPointTwo[0], refPointTwo[1]), (refPointTwo[2], refPointTwo[3]), (0, 255, 0), 1)
 
