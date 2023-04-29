@@ -49,6 +49,7 @@ def nearTrueMid(x1, y1, x2, y2, colour):
             
 
 cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo6.mp4')
+unlock, lock = 10, 0
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -67,19 +68,25 @@ while cap.isOpened():
         totalLines = 0 
         for line in lines:
             x1, y1, x2, y2 = line[0]
-            if slopeCheck(x1, y1, x2, y2) > 0.5 and slopeCheck(x1, y1, x2, y2) < 1.5:
+            if slopeCheck(x1, y1, x2, y2) > 0.5 and slopeCheck(x1, y1, x2, y2) < 1.2:
                 #cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
                 colour = (255, 255, 0)
                 currentLineSlope = slopeCheck(x1, y1, x2, y2)
-                if y1 < midPointCoord[1]:
-                    cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
-                    totalLines += 1
-                    #print(currentLineSlope)
+
+                #right
+                if y1 < midPointCoord[1] and x1 + int(abs(y1-midPointCoord[1])/currentLineSlope) > midPointCoord[0] and x2 + int(abs(y2-midPointCoord[3])/currentLineSlope) > midPointCoord[0]:
+                    slopeReset = slopeCheck(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
+                    if slopeReset > 0.5 and slopeReset < 1.2:
+                        cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
+                        totalLines += 1
+                        #print(currentLineSlope)
 
                 #left
-                elif y2 < midPointCoord[1]:
-                    cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
-                    totalLines += 1
+                elif y2 < midPointCoord[1] and x2 - int(abs(y2-midPointCoord[3])/currentLineSlope) < midPointCoord[0] and x2 - int(abs(y2-midPointCoord[1])/currentLineSlope) < midPointCoord[0]:
+                    slopeReset = slopeCheck(x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3], x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1])
+                    if slopeReset > 0.5 and slopeReset < 1.2: 
+                        cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
+                        totalLines += 1
                     #print(currentLineSlope)
 
 
@@ -99,6 +106,9 @@ while cap.isOpened():
 
         if totalLines > 3:
             print('going forwards')
+            unlock += 1
+            if unlock == 10:
+                lock = 0
             #has to cross 5 to
         else:
             height, width, channels = frame.shape
@@ -111,10 +121,21 @@ while cap.isOpened():
             right_noise = cv2.meanStdDev(cv2.cvtColor(rightHalf, cv2.COLOR_BGR2GRAY))[1][0][0]
 
             # Print the side with less noise
-            if left_noise < right_noise:
-                print("LEFT LFT LFT LFT LEFTTTT")
-            else:
-                print("Right")
+            if left_noise < right_noise and lock == 0:
+                print("right")
+                #lock = 1
+                unlock = 0
+            elif right_noise < left_noise and lock == 0:
+                print("LEFT LEFT LEFT LEFT LEFT LEFT")
+                #lock = 2
+                unlock = 0
+
+            # if lock == 1:
+            #     print('right')
+            #     unlock = 0
+            # elif lock == 2:
+            #     print('LEFT LEFT LEFT LEFT LEFT LEFT')
+            #     unlock = 0
             #get line detector working and then I just draw a line from my corner to th enext end 
             #or go from everything to the left of the detected lane and to the right of the other one
 
