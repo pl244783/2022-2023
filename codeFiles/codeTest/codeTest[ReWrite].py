@@ -3,14 +3,29 @@ import numpy as np
 import math
 
 # #I don't know why my program needs this function, but when I try to delete it, it doesn't work anymore
-def nearBy(x1, y1, x2, y2):
-    #left
-    if (abs(refPointOne[2] - x1) < frame.shape[1]/5 and abs(refPointOne[3] - y1) < frame.shape[0]/5) or (abs(refPointOne[2] - x2) < frame.shape[1]/5 and abs(refPointOne[3] - y2) < frame.shape[0]/5):
-        return nearTrueMid(x1, y1, x2, y2, (0, 0, 255))
-    
-    #right
-    elif (abs(refPointTwo[2] - x1) < frame.shape[1]/5 and abs(refPointTwo[3] - y1) < frame.shape[0]/5) or (abs(refPointTwo[2] - x2) < frame.shape[1]/5 and abs(refPointTwo[3] - y2) < frame.shape[0]/5):
-        return nearTrueMid(x1, y1, x2, y2, (255, 0, 0))
+def nearBy(x1, y1, x2, y2, currentLineSlope):
+    if currentLineSlope > 0.5 and currentLineSlope < 1.2:
+        #cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
+        colour = (255, 255, 0)
+
+        #right
+        if y1 < midPointCoord[1] and x1 + int(abs(y1-midPointCoord[1])/currentLineSlope) > midPointCoord[0] and x2 + int(abs(y2-midPointCoord[3])/currentLineSlope) > midPointCoord[0]:
+            slopeReset = slopeCheck(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
+            if slopeReset > 0.5 and slopeReset < 1.2:
+                cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
+                return 1
+                #print(currentLineSlope)
+
+        #left
+        elif y2 < midPointCoord[1] and x2 - int(abs(y2-midPointCoord[3])/currentLineSlope) < midPointCoord[0] and x2 - int(abs(y2-midPointCoord[1])/currentLineSlope) < midPointCoord[0]:
+            slopeReset = slopeCheck(x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3], x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1])
+            if slopeReset > 0.5 and slopeReset < 1.2: 
+                cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
+                return 1
+            #print(currentLineSlope)
+        
+        else:
+            return 0
 
 def slopeCheck(x1, y1, x2, y2):
     if math.isinf(round(abs(y1-y2)/abs(x1-x2), 2)):
@@ -72,30 +87,12 @@ while cap.isOpened():
         for line in lines:
             x1, y1, x2, y2 = line[0]
             currentLineSlope = slopeCheck(x1, y1, x2, y2)
-            if currentLineSlope > 0.5 and currentLineSlope < 1.2:
-                cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
-                colour = (255, 255, 0)
-
-                #right
-                if y1 < midPointCoord[1] and x1 + int(abs(y1-midPointCoord[1])/currentLineSlope) > midPointCoord[0] and x2 + int(abs(y2-midPointCoord[3])/currentLineSlope) > midPointCoord[0]:
-                    slopeReset = slopeCheck(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
-                    if slopeReset > 0.5 and slopeReset < 1.2:
-                        cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
-                        totalLines += 1
-                        #print(currentLineSlope)
-
-                #left
-                elif y2 < midPointCoord[1] and x2 - int(abs(y2-midPointCoord[3])/currentLineSlope) < midPointCoord[0] and x2 - int(abs(y2-midPointCoord[1])/currentLineSlope) < midPointCoord[0]:
-                    slopeReset = slopeCheck(x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3], x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1])
-                    if slopeReset > 0.5 and slopeReset < 1.2: 
-                        cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
-                        totalLines += 1
-                    #print(currentLineSlope)
+            totalLines += nearBy(x1, y1, x2, y2)
             
-            elif currentLineSlope == 100 and y1 > midPointCoord[1]:
-                #cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
+            if currentLineSlope == 100 and y1 > midPointCoord[1]:
+                cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
                 frameCounted = True
-
+                
             # #______________________________________________________________-------------------------------------------------------______
             temp = tempCheck(nearBy(x1, y1, x2, y2))
             if temp is not None:
@@ -117,32 +114,16 @@ while cap.isOpened():
         if totalFrames >= 3:
             lock = 5
 
-        if totalLines > 3:
-            if lock > 0:
+        if lock > 0:
+            if totalLines > 3:
                 lock -= 1
-                print('probably turning')
             else:
-                print('going forwards')
-        else:
-            if lock > 0:
                 lock = 5
-                print('probably turning')
-            else:
-                print('going forwards')
-    
+            print('probably turning')
+        else:
+            print('going forwards')
 
-            
-
-            # if lock == 1:
-            #     print('right')
-            #     unlock = 0
-            # elif lock == 2:
-            #     print('LEFT LEFT LEFT LEFT LEFT LEFT')
-            #     unlock = 0
-            #get line detector working and then I just draw a line from my corner to th enext end 
-            #or go from everything to the left of the detected lane and to the right of the other one
-
-
+                
         # if len(frameArray) > 0:
         #     #print(frameArray, '\t', (x1, y1, x2, y2))
         #     print('forwards')
@@ -151,7 +132,7 @@ while cap.isOpened():
         #     print('not forwards')
 
         # #reference area
-        cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (midPointCoord[2], midPointCoord[3]), (255, 0, 0), 5)
+        #cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (midPointCoord[2], midPointCoord[3]), (255, 0, 0), 1)
         # cv2.line(frame, (refPointOne[0], refPointOne[1]), (refPointOne[2], refPointOne[3]), (0, 255, 0), 1)
         # cv2.line(frame, (refPointTwo[0], refPointTwo[1]), (refPointTwo[2], refPointTwo[3]), (0, 255, 0), 1)
 
