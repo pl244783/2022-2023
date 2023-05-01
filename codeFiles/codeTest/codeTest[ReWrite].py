@@ -26,6 +26,8 @@ def nearBy(x1, y1, x2, y2, currentLineSlope):
     return 0
 
 def slopeCheck(x1, y1, x2, y2):
+    if (x1-x2) == 0:
+        return 10000000
     if math.isinf(round(abs(y1-y2)/abs(x1-x2), 2)):
         return 10000
     elif abs(round(abs(y1-y2)/abs(x1-x2), 2)) < 0.01:
@@ -63,7 +65,7 @@ def nearTrueMid(x1, y1, x2, y2, colour):
                 return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
             
 
-cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo6.mp4')
+cap = cv2.VideoCapture('codeFiles/roadVideos/gitHubVideo2.mp4')
 lock, totalFrames, savedValue = 0, 0, 'stop'
 
 while cap.isOpened():
@@ -77,8 +79,8 @@ while cap.isOpened():
 
         #frame = cv2.GaussianBlur(frame, (3, 3), 0)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        edges = cv2.Canny(gray, 50, 250, apertureSize=3, L2gradient = True)
-        lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=0, maxLineGap=frame.shape[1])
+        edges = cv2.Canny(gray, 50, 250, apertureSize=3, L2gradient = 70)
+        lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=100, minLineLength=0, maxLineGap=frame.shape[1])
 
         frameArray = []
         totalLines, smallestLine = 0, [5*frame.shape[1], 5*frame.shape[1]] 
@@ -87,7 +89,7 @@ while cap.isOpened():
             currentLineSlope = slopeCheck(x1, y1, x2, y2)
             totalLines += nearBy(x1, y1, x2, y2, currentLineSlope)
             
-            if currentLineSlope == 100 and y1 > midPointCoord[1]:
+            if currentLineSlope == 100 and y1 > midPointCoord[1] and (x1 + x2) > frame.shape[1]/2:
                 cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
                 if x1 < smallestLine[0] and x2 < smallestLine[1]:
                     smallestLine[0], smallestLine[1] = x1, x2
@@ -117,8 +119,9 @@ while cap.isOpened():
         if lock > 0:
             if totalLines > 3:
                 lock -= 1
-            else:
+            elif lock > 0:
                 lock = 5
+            
             if smallestLine[0] < frame.shape[1] * 5 and len(savedValue) < 5:
                 if smallestLine[0] < frame.shape[1] - smallestLine[1] :
                     savedValue = ('probably turning left')
