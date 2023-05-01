@@ -23,9 +23,7 @@ def nearBy(x1, y1, x2, y2, currentLineSlope):
                 cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
                 return 1
             #print(currentLineSlope)
-        
-        else:
-            return 0
+    return 0
 
 def slopeCheck(x1, y1, x2, y2):
     if math.isinf(round(abs(y1-y2)/abs(x1-x2), 2)):
@@ -39,7 +37,7 @@ def tempCheck(temp):
     real = True
     if temp is not None and len(frameArray) == 1:
         for value in range(0, len(frameArray), 2):
-            if abs(int(frameArray[0][value]) - int(temp[value])) > frame.shape[1]/50:
+            if abs(int(frameArray[value]) - int(temp)) > frame.shape[1]/50:
                 pass
             else:
                 real = False
@@ -66,7 +64,7 @@ def nearTrueMid(x1, y1, x2, y2, colour):
             
 
 cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo6.mp4')
-lock, totalFrames = 0, 0
+lock, totalFrames, savedValue = 0, 0, 'stop'
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -83,27 +81,29 @@ while cap.isOpened():
         lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=0, maxLineGap=frame.shape[1])
 
         frameArray = []
-        totalLines = 0 
+        totalLines, smallestLine = 0, [5*frame.shape[1], 5*frame.shape[1]] 
         for line in lines:
             x1, y1, x2, y2 = line[0]
             currentLineSlope = slopeCheck(x1, y1, x2, y2)
-            totalLines += nearBy(x1, y1, x2, y2)
+            totalLines += nearBy(x1, y1, x2, y2, currentLineSlope)
             
             if currentLineSlope == 100 and y1 > midPointCoord[1]:
                 cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
+                if x1 < smallestLine[0] and x2 < smallestLine[1]:
+                    smallestLine[0], smallestLine[1] = x1, x2
                 frameCounted = True
                 
             # #______________________________________________________________-------------------------------------------------------______
-            temp = tempCheck(nearBy(x1, y1, x2, y2))
-            if temp is not None:
-                frameArray.append(temp)
+        #     temp = tempCheck(nearBy(x1, y1, x2, y2, currentLineSlope))
+        #     if temp is not None:
+        #         frameArray.append(temp)
                     
-        x1, y1, x2, y2 = 0, 0, 0, 0
-        for value in frameArray:
-            x1, y1, x2, y2 = int(value[0]) + x1, int(value[1]) + y1, int(value[2]) + x2, int(value[3]) + y2
-        if len(frameArray) == 2:
-            x1, y1, x2, y2 = x1/len(frameArray), y1/len(frameArray), x2/len(frameArray), y2/len(frameArray)
-            cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+        # x1, y1, x2, y2 = 0, 0, 0, 0
+        # for value in frameArray:
+        #     x1, y1, x2, y2 = int(value[0]) + x1, int(value[1]) + y1, int(value[2]) + x2, int(value[3]) + y2
+        # if len(frameArray) == 2:
+        #     x1, y1, x2, y2 = x1/len(frameArray), y1/len(frameArray), x2/len(frameArray), y2/len(frameArray)
+        #     cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
 
         #------------------------------------------------------------------------------------------------------------------------------
 
@@ -119,8 +119,14 @@ while cap.isOpened():
                 lock -= 1
             else:
                 lock = 5
-            print('probably turning')
+            if smallestLine[0] < frame.shape[1] * 5 and len(savedValue) < 5:
+                if smallestLine[0] < frame.shape[1] - smallestLine[1] :
+                    savedValue = ('probably turning left')
+                else:
+                    savedValue = ('probably turning right')
+            print(savedValue)
         else:
+            savedValue = 'stop'
             print('going forwards')
 
                 
