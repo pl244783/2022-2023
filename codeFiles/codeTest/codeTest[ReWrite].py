@@ -64,8 +64,7 @@ def nearTrueMid(x1, y1, x2, y2, colour):
                 cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
                 return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
             
-
-cap = cv2.VideoCapture('codeFiles/roadVideos/gitHubVideo2.mp4')
+cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo6.mp4')
 lock, totalFrames, savedValue = 0, 0, 'stop'
 
 while cap.isOpened():
@@ -80,7 +79,9 @@ while cap.isOpened():
         #frame = cv2.GaussianBlur(frame, (3, 3), 0)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(gray, 50, 250, apertureSize=3, L2gradient = 70)
-        lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=100, minLineLength=0, maxLineGap=frame.shape[1])
+        lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=0, maxLineGap=frame.shape[1])
+        #what if I composited a second frame onto it, double check of a threshold 100 and a thres 50
+        dummyLines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=100, minLineLength = 0, maxLineGap=frame.shape[1])
 
         frameArray = []
         totalLines, smallestLine = 0, [5*frame.shape[1], 5*frame.shape[1]] 
