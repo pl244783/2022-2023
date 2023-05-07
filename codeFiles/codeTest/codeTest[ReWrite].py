@@ -7,7 +7,6 @@ def nearBy(x1, y1, x2, y2, currentLineSlope):
     if currentLineSlope > 0.5 and currentLineSlope < 1.2:
         #cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
         colour = (255, 255, 0)
-
         #right
         if y1 < midPointCoord[1] and x1 + int(abs(y1-midPointCoord[1])/currentLineSlope) > midPointCoord[0] and x2 + int(abs(y2-midPointCoord[3])/currentLineSlope) > midPointCoord[0]:
             slopeReset = slopeCheck(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
@@ -48,29 +47,33 @@ def tempCheck(temp):
     elif temp is not None and len(frameArray) == 0:
         return temp
 
-def nearTrueMid(x1, y1, x2, y2, colour):
-    #cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (int(midPointCoord[0] + frame.shape[1]/8), int(midPointCoord[1]+frame.shape[0]/8)), (255, 0, 0), 2)
-    if (abs(midPointCoord[0] - x1) < frame.shape[1]/6 and abs(midPointCoord[1] - y1) < frame.shape[0]/6) or (abs(midPointCoord[0] - x2) < frame.shape[1]/6 and abs(midPointCoord[1] - y2) < frame.shape[1]/6):
-        currentLineSlope = slopeCheck(x1, y1, x2, y2)
-        #right
-        if y1 < midPointCoord[1]:
-            if currentLineSlope > 0.5 and currentLineSlope < 1:
-                cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
-                return(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
+#---------------------------------------------------------------------------
 
-        #left
-        elif y2 < midPointCoord[1]:
-            if currentLineSlope > 0.5 and currentLineSlope < 1:
-                cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
-                return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
-            
+# def nearTrueMid(x1, y1, x2, y2, colour):
+#     #cv2.line(frame, (midPointCoord[0], midPointCoord[1]), (int(midPointCoord[0] + frame.shape[1]/8), int(midPointCoord[1]+frame.shape[0]/8)), (255, 0, 0), 2)
+#     if (abs(midPointCoord[0] - x1) < frame.shape[1]/6 and abs(midPointCoord[1] - y1) < frame.shape[0]/6) or (abs(midPointCoord[0] - x2) < frame.shape[1]/6 and abs(midPointCoord[1] - y2) < frame.shape[1]/6):
+#         currentLineSlope = slopeCheck(x1, y1, x2, y2)
+#         #right
+#         if y1 < midPointCoord[1]:
+#             if currentLineSlope > 0.5 and currentLineSlope < 1:
+#                 cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
+#                 return(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
+
+#         #left
+#         elif y2 < midPointCoord[1]:
+#             if currentLineSlope > 0.5 and currentLineSlope < 1:
+#                 cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
+#                 return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
+
+#----------------------------------------------------------------------------
+
 cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo6.mp4')
 lock, totalFrames, savedValue = 0, 0, 'stop'
 
 while cap.isOpened():
     ret, frame = cap.read()
     if ret:
-        frameCounted = False
+        frameCounted, validLine = False, False
         #theoretical perfect
         midPointCoord = [int(frame.shape[1]/2), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/2), int(frame.shape[0])]
         refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/20), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4), int(frame.shape[0])]
@@ -79,9 +82,9 @@ while cap.isOpened():
         #frame = cv2.GaussianBlur(frame, (3, 3), 0)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(gray, 50, 250, apertureSize=3, L2gradient = 70)
-        lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=0, maxLineGap=frame.shape[1])
-        #what if I composited a second frame onto it, double check of a threshold 100 and a thres 50
-        dummyLines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=100, minLineLength = 0, maxLineGap=frame.shape[1])
+        lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=80, minLineLength=0, maxLineGap=frame.shape[1])
+        
+        #completely stupid, approach, ruins time efficiency, double check
 
         frameArray = []
         totalLines, smallestLine = 0, [5*frame.shape[1], 5*frame.shape[1]] 
@@ -114,11 +117,11 @@ while cap.isOpened():
             totalFrames += 1
         else:
             totalFrames = 0
-        if totalFrames >= 3:
+        if totalFrames >= 5:
             lock = 5
 
         if lock > 0:
-            if totalLines > 3:
+            if totalLines > 1:
                 lock -= 1
             elif lock > 0:
                 lock = 5
