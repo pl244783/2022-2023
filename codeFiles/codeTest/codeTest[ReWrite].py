@@ -12,7 +12,7 @@ def nearBy(x1, y1, x2, y2, currentLineSlope):
             slopeReset = slopeCheck(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
             if slopeReset > 0.5 and slopeReset < 1.2:
                 cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
-                return 1
+                return (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
                 #print(currentLineSlope)
 
         #left
@@ -20,7 +20,7 @@ def nearBy(x1, y1, x2, y2, currentLineSlope):
             slopeReset = slopeCheck(x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3], x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1])
             if slopeReset > 0.5 and slopeReset < 1.2: 
                 cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
-                return 1
+                return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
             #print(currentLineSlope)
     return 0
 
@@ -37,8 +37,8 @@ def slopeCheck(x1, y1, x2, y2):
 def tempCheck(temp):
     real = True
     if temp is not None and len(frameArray) == 1:
-        for value in range(0, len(frameArray), 2):
-            if abs(int(frameArray[value]) - int(temp)) > frame.shape[1]/50:
+        for value in range(0, len(frameArray)):
+            if abs(frameArray[value][0] - temp[0]) > frame.shape[1]/20:
                 pass
             else:
                 real = False
@@ -46,6 +46,7 @@ def tempCheck(temp):
             return temp
     elif temp is not None and len(frameArray) == 0:
         return temp
+    return 0
 
 #---------------------------------------------------------------------------
 
@@ -81,8 +82,8 @@ while cap.isOpened():
 
         #frame = cv2.GaussianBlur(frame, (3, 3), 0)
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        edges = cv2.Canny(gray, 50, 250, apertureSize=3, L2gradient = 70)
-        lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=80, minLineLength=0, maxLineGap=frame.shape[1])
+        edges = cv2.Canny(gray, 50, 250, apertureSize=3)
+        lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=90, minLineLength=0, maxLineGap=frame.shape[1])
         
         #completely stupid, approach, ruins time efficiency, double check
 
@@ -91,10 +92,14 @@ while cap.isOpened():
         for line in lines:
             x1, y1, x2, y2 = line[0]
             currentLineSlope = slopeCheck(x1, y1, x2, y2)
-            totalLines += nearBy(x1, y1, x2, y2, currentLineSlope)
-            
+            temp = nearBy(x1, y1, x2, y2, currentLineSlope)
+            if temp != 0:
+                totalLines += 1
+                if tempCheck(temp) != 0:
+                    frameArray.append(temp)
+
             if currentLineSlope == 100 and y1 > midPointCoord[1] and (x1 + x2) > frame.shape[1]/2:
-                cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
+                #cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
                 if x1 < smallestLine[0] and x2 < smallestLine[1]:
                     smallestLine[0], smallestLine[1] = x1, x2
                 frameCounted = True
@@ -104,12 +109,12 @@ while cap.isOpened():
         #     if temp is not None:
         #         frameArray.append(temp)
                     
-        # x1, y1, x2, y2 = 0, 0, 0, 0
-        # for value in frameArray:
-        #     x1, y1, x2, y2 = int(value[0]) + x1, int(value[1]) + y1, int(value[2]) + x2, int(value[3]) + y2
-        # if len(frameArray) == 2:
-        #     x1, y1, x2, y2 = x1/len(frameArray), y1/len(frameArray), x2/len(frameArray), y2/len(frameArray)
-        #     cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+        x1, y1, x2, y2 = 0, 0, 0, 0
+        for value in frameArray:
+            x1, y1, x2, y2 = int(value[0]) + x1, int(value[1]) + y1, int(value[2]) + x2, int(value[3]) + y2
+        if len(frameArray) > 1:
+            x1, y1, x2, y2 = x1/len(frameArray), y1/len(frameArray), x2/len(frameArray), y2/len(frameArray)
+            cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
 
         #------------------------------------------------------------------------------------------------------------------------------
 
@@ -118,7 +123,7 @@ while cap.isOpened():
         else:
             totalFrames = 0
         if totalFrames >= 5:
-            lock = 5
+            lock = 5    
 
         if lock > 0:
             if totalLines > 1:
