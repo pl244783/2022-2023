@@ -98,42 +98,42 @@ def register():
     
 def gen_frames():
     #I don't know why my program needs this function, but when I try to delete it, it doesn't work anymore
-    def nearBy(x1, y1, x2, y2):
-        #left
-        if (abs(refPointOne[2] - x1) < frame.shape[0]/5 and abs(refPointOne[3] - y1) < frame.shape[0]/5) or (abs(refPointOne[2] - x2) < frame.shape[0]/5 and abs(refPointOne[3] - y2) < frame.shape[0]/5):
-            return nearTrueMid(x1, y1, x2, y2, (0, 0, 255))
-        
-        #right
-        elif (abs(refPointTwo[2] - x1) < frame.shape[0]/5 and abs(refPointTwo[3] - y1) < frame.shape[0]/5) or (abs(refPointTwo[2] - x2) < frame.shape[0]/5 and abs(refPointTwo[3] - y2) < frame.shape[0]/5):
-            return nearTrueMid(x1, y1, x2, y2, (0, 0, 255))
-
-    def nearTrueMid(x1, y1, x2, y2, colour):
-        #cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
-        if (abs(midPointCoord[0] - x1) < frame.shape[0]/5 and abs(midPointCoord[1] - y1) < frame.shape[0]/5)or (abs(midPointCoord[0] - x2) < frame.shape[0]/5 and abs(midPointCoord[1] - y2) < frame.shape[0]/5):
-            currentLineSlope = slopeCheck(x1, y1, x2, y2)
+    def nearBy(x1, y1, x2, y2, currentLineSlope):
+        if currentLineSlope > 0.5 and currentLineSlope < 1.2:
+            #cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
+            colour = (255, 255, 0)
             #right
-            if y1 < midPointCoord[1]:
-                if slopeCheck(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2, y2) > 0.5:
+            if y1 < midPointCoord[1] and x1 + int(abs(y1-midPointCoord[1])/currentLineSlope) > midPointCoord[0] and x2 + int(abs(y2-midPointCoord[3])/currentLineSlope) > midPointCoord[0]:
+                slopeReset = slopeCheck(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
+                if slopeReset > 0.5 and slopeReset < 1.2:
                     cv2.line(frame, (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1]), (x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), colour, 2)
-                    return(x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
+                    return (x1 + int(abs(y1-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 + int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
+                    #print(currentLineSlope)
 
             #left
-            elif y2 < midPointCoord[1]:
-                if slopeCheck(x1, y1, x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]) > 0.5:
+            elif y2 < midPointCoord[1] and x2 - int(abs(y2-midPointCoord[3])/currentLineSlope) < midPointCoord[0] and x2 - int(abs(y2-midPointCoord[1])/currentLineSlope) < midPointCoord[0]:
+                slopeReset = slopeCheck(x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3], x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1])
+                if slopeReset > 0.5 and slopeReset < 1.2: 
                     cv2.line(frame, (x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3]), (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1]), colour, 2) 
                     return (x2 - int(abs(y2-midPointCoord[1])/currentLineSlope), midPointCoord[1], x2 - int(abs(y2-midPointCoord[3])/currentLineSlope), midPointCoord[3])
+                #print(currentLineSlope)
+        return 0
 
     def slopeCheck(x1, y1, x2, y2):
+        if (x1-x2) == 0:
+            return 10000000
         if math.isinf(round(abs(y1-y2)/abs(x1-x2), 2)):
             return 10000
+        elif abs(round(abs(y1-y2)/abs(x1-x2), 2)) < 0.01:
+            return 100
         else:
             return round(abs(y1-y2)/abs(x1-x2), 2)
 
     def tempCheck(temp):
         real = True
         if temp is not None and len(frameArray) == 1:
-            for value in range(0, len(frameArray), 2):
-                if abs(int(frameArray[0][value]) - int(temp[value])) > frame.shape[1]/50:
+            for value in range(0, len(frameArray)):
+                if abs(frameArray[value][0] - temp[0]) > frame.shape[1]/20:
                     pass
                 else:
                     real = False
@@ -141,34 +141,75 @@ def gen_frames():
                 return temp
         elif temp is not None and len(frameArray) == 0:
             return temp
-    
-    cap = cv2.VideoCapture('codeFiles/roadVideos/gitHubVideo1.mp4')
+        return 0
+
+    cap = cv2.VideoCapture('codeFiles/roadVideos/homeVideo6.mp4')
+    lock, totalFrames, savedValue = 0, 0, 'stop'
+
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
+            frameCounted = False
+            #theoretical perfect
             midPointCoord = [int(frame.shape[1]/2), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/2), int(frame.shape[0])]
-            refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/25), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4), int(frame.shape[0])]
-            refPointTwo = [int(frame.shape[1]/2)+int(frame.shape[1]/25), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4)*3, int(frame.shape[0])]
+            refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/20), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4), int(frame.shape[0])]
+            refPointTwo = [int(frame.shape[1]/2)+int(frame.shape[1]/20), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4)*3, int(frame.shape[0])]
 
-            frame = cv2.GaussianBlur(frame, (7, 7), 0)
+            #frame = cv2.GaussianBlur(frame, (3, 3), 0)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            edges = cv2.Canny(gray, 120, 200, apertureSize=3)
-            lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=0, maxLineGap=frame.shape[1])
+            edges = cv2.Canny(gray, 50, 250, apertureSize=3)
+            lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=90, minLineLength=0, maxLineGap=frame.shape[1])
+            
+            #completely stupid, approach, ruins time efficiency, double check
 
             frameArray = []
-
+            totalLines, smallestLine = 0, [5*frame.shape[1], 5*frame.shape[1]] 
             for line in lines:
                 x1, y1, x2, y2 = line[0]
-                temp = tempCheck(nearBy(x1, y1, x2, y2))
-                if temp is not None:
-                    frameArray.append(temp)
-                        
+                currentLineSlope = slopeCheck(x1, y1, x2, y2)
+                temp = nearBy(x1, y1, x2, y2, currentLineSlope)
+                if temp != 0:
+                    totalLines += 1
+                    if tempCheck(temp) != 0:
+                        frameArray.append(temp)
+
+                if currentLineSlope == 100 and y1 > midPointCoord[1] and (x1 + x2) > frame.shape[1]/2:
+                    #cv2.line(frame, (x1, y1), (x2, y2), (255, 255, 255), 2)
+                    if x1 < smallestLine[0] and x2 < smallestLine[1]:
+                        smallestLine[0], smallestLine[1] = x1, x2
+                    frameCounted = True
+
             x1, y1, x2, y2 = 0, 0, 0, 0
             for value in frameArray:
                 x1, y1, x2, y2 = int(value[0]) + x1, int(value[1]) + y1, int(value[2]) + x2, int(value[3]) + y2
-            if len(frameArray) == 2:
+            if len(frameArray) > 1:
                 x1, y1, x2, y2 = x1/len(frameArray), y1/len(frameArray), x2/len(frameArray), y2/len(frameArray)
                 cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+
+            #------------------------------------------------------------------------------------------------------------------------------
+
+            if frameCounted:
+                totalFrames += 1
+            else:
+                totalFrames = 0
+            if totalFrames >= 5:
+                lock = 5    
+
+            if lock > 0:
+                if totalLines > 1:
+                    lock -= 1
+                elif lock > 0:
+                    lock = 5
+                
+                if smallestLine[0] < frame.shape[1] * 5 and len(savedValue) < 5:
+                    if smallestLine[0] < frame.shape[1] - smallestLine[1] :
+                        savedValue = ('probably turning left')
+                    else:
+                        savedValue = ('probably turning right')
+                print(savedValue)
+            else:
+                savedValue = 'stop'
+                print('going forwards')
 
             _, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()

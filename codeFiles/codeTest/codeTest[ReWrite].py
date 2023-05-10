@@ -74,7 +74,7 @@ lock, totalFrames, savedValue = 0, 0, 'stop'
 while cap.isOpened():
     ret, frame = cap.read()
     if ret:
-        frameCounted, validLine = False, False
+        frameCounted = False
         #theoretical perfect
         midPointCoord = [int(frame.shape[1]/2), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/2), int(frame.shape[0])]
         refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/20), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4), int(frame.shape[0])]
