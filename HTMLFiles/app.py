@@ -197,13 +197,13 @@ def gen_frames():
                 
                 if smallestLine[0] < frame.shape[1] * 5 and len(savedValue) < 5:
                     if smallestLine[0] < frame.shape[1] - smallestLine[1] :
-                        savedValue = ('probably turning left')
+                        savedValue = ('left')
                     else:
-                        savedValue = ('probably turning right')
+                        savedValue = ('right')
                 print(savedValue)
             else:
                 savedValue = 'stop'
-                print('going forwards')
+                print('forwards')
 
             _, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
@@ -211,13 +211,13 @@ def gen_frames():
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n',
                     'direction': savedValue}
             yield (data)
-            #yield (b'--frame\r\n'
-                #b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            # yield (b'--frame\r\n'
+            #     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route('/video_feed')
 def video_feed():
-    response = jsonify(gen_frames())
-    return response
+    # response = jsonify(gen_frames())
+    # return response
     # return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
