@@ -152,15 +152,11 @@ def gen_frames():
             frameCounted = False
             #theoretical perfect
             midPointCoord = [int(frame.shape[1]/2), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/2), int(frame.shape[0])]
-            refPointOne = [int(frame.shape[1]/2)-int(frame.shape[1]/20), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4), int(frame.shape[0])]
-            refPointTwo = [int(frame.shape[1]/2)+int(frame.shape[1]/20), int(frame.shape[0]/2)+int(frame.shape[0]/10), int(frame.shape[1]/4)*3, int(frame.shape[0])]
 
             #frame = cv2.GaussianBlur(frame, (3, 3), 0)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             edges = cv2.Canny(gray, 50, 250, apertureSize=3)
             lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=90, minLineLength=0, maxLineGap=frame.shape[1])
-            
-            #completely stupid, approach, ruins time efficiency, double check
 
             frameArray = []
             totalLines, smallestLine = 0, [5*frame.shape[1], 5*frame.shape[1]] 
@@ -185,8 +181,6 @@ def gen_frames():
             if len(frameArray) > 1:
                 x1, y1, x2, y2 = x1/len(frameArray), y1/len(frameArray), x2/len(frameArray), y2/len(frameArray)
                 cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-
-            #------------------------------------------------------------------------------------------------------------------------------
 
             if frameCounted:
                 totalFrames += 1
@@ -220,7 +214,7 @@ def gen_frames():
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-#-----------------------------------------------------------------------------
+#------------------------------------------------------------------------------------
 
 def nonEdited(img):
     image = cv2.imread(img)
@@ -280,7 +274,7 @@ def imaging():
     image = request.args.get('image', type=str)
     return Response(edited(image), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-# ---------------------------------------------------------------------
+# ------------------------------------------------------------------------------------------
 
 if __name__=='__main__':
     app.run(host="0.0.0.0", port=8888, threaded=True, debug=True)
