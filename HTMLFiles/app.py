@@ -1,10 +1,7 @@
 from flask import Flask, render_template, request, redirect, session, Response, jsonify
 import logging
-import hashlib
-import sqlite3
-import cv2
-import numpy as np
-import math
+import sqlite3, hashlib, base64
+import cv2, math, numpy as np
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'
@@ -96,7 +93,7 @@ def register():
     else: 
         return render_template('register.html')
     
-def gen_frames():
+def gen_frames(alternative):
     #I don't know why my program needs this function, but when I try to delete it, it doesn't work anymore
     def nearBy(x1, y1, x2, y2, currentLineSlope):
         if currentLineSlope > 0.5 and currentLineSlope < 1.2:
@@ -195,31 +192,44 @@ def gen_frames():
                 elif lock > 0:
                     lock = 5
                 
-                if smallestLine[0] < frame.shape[1] * 5 and len(savedValue) < 5:
+                if smallestLine[0] < frame.shape[1] * 5 and len(savedValue) == 7:
                     if smallestLine[0] < frame.shape[1] - smallestLine[1] :
                         savedValue = ('left')
                     else:
                         savedValue = ('right')
                 print(savedValue)
             else:
-                savedValue = 'stop'
-                print('forwards')
+                savedValue = 'forward'
+                print(savedValue)
 
-            _, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            data = {'frames': b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n',
+            _, buffer = cv2.imencode('.jpg', frame)  
+            if alternative == 0:
+                frame = base64.b64encode(frame[1]).decode('utf-8')
+                data = {'frames': frame,
                     'direction': savedValue}
-            yield (data)
-            # yield (b'--frame\r\n'
-            #     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                yield (data)
+
+            if alternative == 1:
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'
+                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                
+            elif alternative == 2:
+                yield (savedValue)
+
+@app.route('/data_feed')
+def data_feed():
+    response = jsonify(next(gen_frames(0)))
+    #use next
+    return response
 
 @app.route('/video_feed')
 def video_feed():
-    # response = jsonify(gen_frames())
-    # return response
-    # return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    return Response(gen_frames(1), mimetype='multipart/x-mixed-replace; boundary=frame')
 
+@app.route('/prediction_feed')
+def prediction_feed():
+    return Response(gen_frames(2))
 
 
 #------------------------------------------------------------------------------------

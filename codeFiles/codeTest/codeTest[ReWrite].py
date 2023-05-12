@@ -131,15 +131,14 @@ while cap.isOpened():
             elif lock > 0:
                 lock = 5
             
-            if smallestLine[0] < frame.shape[1] * 5 and len(savedValue) < 5:
+            if smallestLine[0] < frame.shape[1] * 5 and len(savedValue) == 7:
                 if smallestLine[0] < frame.shape[1] - smallestLine[1] :
                     savedValue = ('probably turning left')
                 else:
                     savedValue = ('probably turning right')
-            print(savedValue)
         else:
-            savedValue = 'stop'
-            print('going forwards')
+            savedValue = 'forwards'
+        print(savedValue)
 
                 
         # if len(frameArray) > 0:
