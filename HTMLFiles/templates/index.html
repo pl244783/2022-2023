@@ -8,22 +8,9 @@
     <link rel="stylesheet" href="/static/main.css" />
   </head>
   <div class="body">
-    <!-- <div class="topR">
-      Non Edited Photos
-      <img id = "NonEdited" src ="{{ url_for('image', img = 'codeFiles/roadPictures/gitHubPhoto1.jpg') }}", width="100%">
-      <img id = "NonEdited2" src ="{{ url_for('image', img = 'codeFiles/roadPictures/gitHubPhoto2.jpg') }}", width="100%">
-      <img id = "NonEdited3" src ="{{ url_for('image', img = 'codeFiles/roadPictures/gitHubPhoto3.jpg') }}", width="100%">
-    </div>
-
-    <div class="topL">
-      Edited Photos
-      <img id = "Edited" src ="{{ url_for('imaging', image = 'codeFiles/roadPictures/gitHubPhoto1.jpg') }}", width="100%">
-      <img id = "Edited2" src ="{{ url_for('imaging', image = 'codeFiles/roadPictures/gitHubPhoto2.jpg') }}", width="100%">
-      <img id = "Edited3" src ="{{ url_for('imaging', image = 'codeFiles/roadPictures/gitHubPhoto3.jpg') }}", width="100%">
-    </div> -->
 
     <div class="downL">
-      Straight Line Video 
+      Video 
       <div id="video-container">
         <img id="video-frame" src="{{ url_for('video_feed') }}" width="100%">
         <img id="overlay-image" src="/static/forward.png">
@@ -35,7 +22,7 @@
               img.src = "{{ url_for('video_feed') }}?rand=" + Math.random();
           }
       
-          setInterval(reloadImage, 20000); // Reload the image every 8 second
+          setInterval(reloadImage, 25000); // Reload the image every 8 second
       </script>
     </div>
 

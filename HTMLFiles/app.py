@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, Response
+from flask import Flask, render_template, request, redirect, session, Response, jsonify
 import logging
 import hashlib
 import sqlite3
@@ -207,72 +207,22 @@ def gen_frames():
 
             _, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            data = {'frames': b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n',
+                    'direction': savedValue}
+            yield (data)
+            #yield (b'--frame\r\n'
+                #b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    response = jsonify(gen_frames())
+    return response
+    # return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
 
 #------------------------------------------------------------------------------------
-
-def nonEdited(img):
-    image = cv2.imread(img)
-    _, buffer = cv2.imencode('.jpg', image)
-    img = buffer.tobytes()
-    yield (b'--frame\r\n'
-            b'Content-Type: image/jpeg\r\n\r\n' + img + b'\r\n\r\n')
-
-@app.route('/image')
-def image():
-    img = request.args.get('img', type=str)
-    return Response(nonEdited(img), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-def edited(image):
-    img = cv2.imread(image)
-    img = cv2.GaussianBlur(img, (5, 5), 0)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    edges = cv2.Canny(gray, 120, 200, apertureSize=3)
-    lines = cv2.HoughLinesP(edges, rho=1, theta=np.pi/180, threshold=50, minLineLength=0, maxLineGap=50)
-
-    #theoretical perfect
-    midPointCoord = [int(img.shape[1]/2), int(img.shape[0]/2)+int(img.shape[0]/8), int(img.shape[1]/2), int(img.shape[0])]
-    refPointOne = [int(img.shape[1]/2)-int(img.shape[1]/25), int(img.shape[0]/2)+int(img.shape[0]/8), int(img.shape[1]/4), int(img.shape[0])]
-    refPointTwo = [int(img.shape[1]/2)+int(img.shape[1]/25), int(img.shape[0]/2)+int(img.shape[0]/8), int(img.shape[1]/4)*3, int(img.shape[0])]
-
-    def nearBy(x1, y1, x2, y2):
-        #left
-        if (abs(refPointOne[2] - x1) < 170 and abs(refPointOne[3] - y1) < 170) or (abs(refPointOne[2] - x2) < 170 and abs(refPointOne[3] - y2) < 170):
-            #cv2.line(img, (x1, y1), (x2, y2), (0, 255, 255), 1) 
-            nearTrueMid(x1, y1, x2, y2, refPointOne[0])
-        
-        #right
-        if (abs(refPointTwo[2] - x1) < 170 and abs(refPointTwo[3] - y1) < 170) or (abs(refPointTwo[2] - x2) < 170 and abs(refPointTwo[3] - y2) < 170):
-            #cv2.line(img, (x1, y1), (x2, y2), (0, 255, 255), 1) 
-            nearTrueMid(x1, y1, x2, y2, refPointTwo[0])
-
-    def nearTrueMid(x1, y1, x2, y2, direction):
-        if (abs(midPointCoord[0] - x1) < 50 and abs(midPointCoord[1] - y1) < 50) or (abs(midPointCoord[0] - x2) < 50 and abs(midPointCoord[1] - y2) < 50):
-            if y1 < midPointCoord[1]:
-                cv2.line(img, (direction, midPointCoord[1]), (x2, y2), (0, 0, 255), 2)
-            elif y2 < midPointCoord[1]:
-                cv2.line(img, (x1, y1), (direction, midPointCoord[1]), (0, 0, 255), 2) 
-            else: 
-                cv2.line(img, (x1, y1), (x2, y2), (0, 0, 255), 2) 
-
-    for line in lines:
-        x1, y1, x2, y2 = line[0]
-        nearBy(x1, y1, x2, y2)
-
-    _, buffer = cv2.imencode('.jpg', img)
-    img = buffer.tobytes()
-    yield (b'--frame\r\n'
-            b'Content-Type: image/jpeg\r\n\r\n' + img + b'\r\n\r\n')
-
-@app.route('/imaging')
-def imaging():
-    image = request.args.get('image', type=str)
-    return Response(edited(image), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 # ------------------------------------------------------------------------------------------
 
