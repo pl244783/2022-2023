@@ -12,6 +12,8 @@
       const imgElement = document.getElementById('myImage');
       const directionElement = document.getElementById('direction');
 
+      console.log('data:image/png;base64,' + base64Image.frames);
+
       function fetchBase64Image() {
         fetch('/data_feed')
           .then(response => response.json())
