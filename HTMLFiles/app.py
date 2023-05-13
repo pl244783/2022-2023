@@ -235,13 +235,7 @@ def video_feed():
 
 @app.route('/prediction_feed')
 def prediction_feed():
-    def generate():
-        latest_frame = None  # Variable to store the latest frame
-
-        for frame in gen_frames(2):
-            latest_frame = frame  # Update the latest frame with the current frame
-            yield frame
-    return Response(generate(), mimetype='text/event-stream')
+    return Response(gen_frames(2), mimetype='text/event-stream')
 
 @app.route('/test_route')
 def test_route():
