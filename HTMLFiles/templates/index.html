@@ -24,6 +24,26 @@
       
           setInterval(reloadImage, 25000); // Reload the image every 8 second
       </script>
+
+<p id="direction"></p>
+<p id="AHHHHHHHHHH">AHHHHHHHHHHHHH</p>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const directionElement = document.getElementById('direction');
+
+    function fetchPrediction() {
+      fetch('/prediction_feed')
+        .then(response => response.text())
+        .then(savedValue => {
+          directionElement.textContent = 'Direction: ' + savedValue;
+        });
+    }
+
+    fetchPrediction();
+
+    setInterval(fetchBase64Image, 1000);
+  });
+</script>
     </div>
 
     <div class="downR">

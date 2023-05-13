@@ -203,7 +203,9 @@ def gen_frames(alternative):
 
             if alternative == 0:
                 #maybe frame
-                frame = base64.b64encode(frame).decode()
+                _, encoded_image = cv2.imencode('.jpg', frame)
+                frame = base64.b64encode(encoded_image).decode()
+                
                 data = {'frames': frame,
                     'direction': savedValue}
                 yield data
@@ -219,14 +221,8 @@ def gen_frames(alternative):
 
 @app.route('/data_feed')
 def data_feed():
-    generator = gen_frames(0)
-    while True:
-        try:
-            response = jsonify(next(generator))
-            #print(response)
-            return response
-        except StopIteration:
-            break
+    response = jsonify(next(gen_frames(0)))
+    return response
 
 @app.route('/video_feed')
 def video_feed():
@@ -234,7 +230,8 @@ def video_feed():
 
 @app.route('/prediction_feed')
 def prediction_feed():
-    return Response(gen_frames(2), mimetype='text/event-stream')
+    savedValue = gen_frames(2)
+    return savedValue
 
 @app.route('/test_route')
 def test_route():
