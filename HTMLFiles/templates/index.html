@@ -11,7 +11,7 @@
 
     <div class="downL">
       Video 
-      <div id="video-container">
+      <!-- <div id="video-container">
         <img id="video-frame" src="{{ url_for('video_feed') }}" width="100%">
         <img id="overlay-image" src="/static/forward.png">
       </div>
@@ -22,7 +22,37 @@
               img.src = "{{ url_for('video_feed') }}?rand=" + Math.random();
           setInterval(reloadImage, 25000); // Reload the image every 8 second
           }
-      </script>
+      </script> -->
+      <div id="video-container">
+        <img id="myImage" src="" alt="Image", width = 100%>
+        <img id="overlay-image" src="/static/forward.png">
+      </div>
+      <p id="direction"></p>
+      AHHHHHHHHHHHHHHHHHHHH
+        <script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const imgElement = document.getElementById('myImage');
+            const directionElement = document.getElementById('direction');
+
+            function fetchBase64Image() {
+              fetch('/data_feed')
+                .then(response => response.json())
+                .then(base64Image => {
+                  imgElement.src = 'data:image;base64,' + base64Image.frames;
+                  directionElement.textContent = 'Direction: ' + base64Image.direction;
+
+                  console.log('data:image;base64,' + base64Image.frames);
+                })
+                .catch(error => {
+                  console.error('Error fetching base64 image:', error);
+                });
+            }
+
+            fetchBase64Image();
+
+            setInterval(fetchBase64Image, 10);
+          });
+        </script>
     </div>
 
     <div class="downR">

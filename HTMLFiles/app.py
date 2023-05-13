@@ -11,7 +11,7 @@ app.secret_key = 'your-secret-key-here'
 class ExcludeFilter(logging.Filter):
     def filter(self, record):
         message = record.getMessage()
-        return "GET /static/" not in message and "GET /video_feed" not in message
+        return "GET /static/" not in message and "GET /video_feed" not in message and "GET /data_feed" not in message
     
 logger = logging.getLogger()
 handler = logging.FileHandler('HTMLFiles/static/logFile.html', 'w')
@@ -95,7 +95,8 @@ def register():
     else: 
         return render_template('register.html')
     
-def gen_frames(alternative):
+#--------------------------------------
+def gen_frames():
     #I don't know why my program needs this function, but when I try to delete it, it doesn't work anymore
     def nearBy(x1, y1, x2, y2, currentLineSlope):
         if currentLineSlope > 0.5 and currentLineSlope < 1.2:
@@ -202,31 +203,18 @@ def gen_frames(alternative):
                         savedValue = ('right')
             else:
                 savedValue = 'forward'
-            #print(savedValue)
 
-            if alternative == 0:
-                #maybe frame
-                _, encoded_image = cv2.imencode('.jpg', frame)
-                frame = base64.b64encode(encoded_image).decode()
-                
-                data = {'frames': frame,
-                    'direction': savedValue}
-                yield data
+            _, buffer = cv2.imencode('.jpg', frame)  
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+#-------------------------------------------
 
-            if alternative == 1:
-                _, buffer = cv2.imencode('.jpg', frame)  
-                frame = buffer.tobytes()
-                yield (b'--frame\r\n'
-                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-                
-            elif alternative == 2:
-                yield savedValue
-            
-            global direction
-            direction = savedValue
-
-            global res_image
-            res_image = frame
+#-----------------------------------------------------------------------
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+#----------------------------------------------------------------------
 
 @app.route('/data_feed')
 def data_feed():
@@ -234,18 +222,9 @@ def data_feed():
     response = jsonify(data)
     return response
 
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen_frames(1), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/prediction_feed')
-def prediction_feed():
-    savedValue = next(gen_frames(2))
-    return savedValue
-
-@app.route('/test_route')
-def test_route():
-    return render_template('test.html')
+# @app.route('/test_route')
+# def test_route():
+#     return render_template('test.html')
 
 
 #------------------------------------------------------------------------------------
