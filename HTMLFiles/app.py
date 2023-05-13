@@ -216,13 +216,18 @@ def gen_frames(alternative):
                     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
                 
             elif alternative == 2:
-                yield (savedValue)
+                yield savedValue
 
 @app.route('/data_feed')
 def data_feed():
-    response = jsonify(next(gen_frames(0)))
-    print(response)
-    return response
+    generator = gen_frames(0)
+    while True:
+        try:
+            response = jsonify(next(generator))
+            print(response)
+            return response
+        except StopIteration:
+            break
 
 @app.route('/video_feed')
 def video_feed():
@@ -230,7 +235,13 @@ def video_feed():
 
 @app.route('/prediction_feed')
 def prediction_feed():
-    return Response(gen_frames(2), mimetype='text/event-stream')
+    def generate():
+        latest_frame = None  # Variable to store the latest frame
+
+        for frame in gen_frames(2):
+            latest_frame = frame  # Update the latest frame with the current frame
+            yield frame
+    return Response(generate(), mimetype='text/event-stream')
 
 @app.route('/test_route')
 def test_route():
