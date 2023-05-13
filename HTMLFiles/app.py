@@ -202,14 +202,15 @@ def gen_frames(alternative):
                 savedValue = 'forward'
                 print(savedValue)
 
-            _, buffer = cv2.imencode('.jpg', frame)  
             if alternative == 0:
-                frame = base64.b64encode(frame[1]).decode('utf-8')
+                #maybe frame
+                frame = base64.b64encode(frame).decode('utf-8')
                 data = {'frames': frame,
                     'direction': savedValue}
-                yield (data)
+                yield data
 
             if alternative == 1:
+                _, buffer = cv2.imencode('.jpg', frame)  
                 frame = buffer.tobytes()
                 yield (b'--frame\r\n'
                     b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
@@ -220,7 +221,7 @@ def gen_frames(alternative):
 @app.route('/data_feed')
 def data_feed():
     response = jsonify(next(gen_frames(0)))
-    #use next
+    print(response)
     return response
 
 @app.route('/video_feed')
@@ -229,7 +230,11 @@ def video_feed():
 
 @app.route('/prediction_feed')
 def prediction_feed():
-    return Response(gen_frames(2))
+    return Response(gen_frames(2), mimetype='text/event-stream')
+
+@app.route('/test_route')
+def test_route():
+    return render_template('test.html')
 
 
 #------------------------------------------------------------------------------------

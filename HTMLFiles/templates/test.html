@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Data</title>
+    AHHHHHHHHHHH
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.getJSON('/data_feed', function(data) {
+                var imageBase64 = data.frames;
+                var direction = data.direction;
+
+                // Display the base64 encoded image
+                <img id="base64-frame" src={`data:image/jpg;base64,${imageBase64}`} alt="Frame Image" />
+                // //<img id="video-frame" src="{{ url_for('video_feed') }}" width="100%">
+
+                // Display the direction data
+                var directionElement = document.createElement('p');
+                directionElement.textContent = 'Direction: ' + direction;
+                document.body.appendChild(directionElement);
+            });
+        });
+    </script>
+</head>
+<body>
+    <!-- The image and direction will be displayed here -->
+</body>
+</html>
