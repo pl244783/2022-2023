@@ -197,10 +197,9 @@ def gen_frames(alternative):
                         savedValue = ('left')
                     else:
                         savedValue = ('right')
-                print(savedValue)
             else:
                 savedValue = 'forward'
-                print(savedValue)
+            #print(savedValue)
 
             if alternative == 0:
                 #maybe frame
@@ -224,7 +223,7 @@ def data_feed():
     while True:
         try:
             response = jsonify(next(generator))
-            print(response)
+            #print(response)
             return response
         except StopIteration:
             break
