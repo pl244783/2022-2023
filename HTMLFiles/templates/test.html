@@ -12,14 +12,17 @@
       const imgElement = document.getElementById('myImage');
       const directionElement = document.getElementById('direction');
 
-      console.log('data:image/png;base64,' + base64Image.frames);
-
       function fetchBase64Image() {
+        data:image;base64,
         fetch('/data_feed')
           .then(response => response.json())
           .then(base64Image => {
             imgElement.src = 'data:image/png;base64,' + base64Image.frames;
             directionElement.textContent = 'Direction: ' + base64Image.direction;
+
+            data:image;base64,
+
+            console.log('data:image/png;base64,' + base64Image.frames);
           })
           .catch(error => {
             console.error('Error fetching base64 image:', error);
@@ -29,10 +32,6 @@
       fetchBase64Image();
 
       setInterval(fetchBase64Image, 1000);
-
-      fetchBase64Image();
-
-      console.log('data:image/png;base64,' + base64Image.frames);
     });
   </script>
 </body>

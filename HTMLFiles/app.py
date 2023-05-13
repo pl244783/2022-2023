@@ -203,7 +203,7 @@ def gen_frames(alternative):
 
             if alternative == 0:
                 #maybe frame
-                frame = base64.b64encode(frame).decode('utf-8')
+                frame = base64.b64encode(frame).decode()
                 data = {'frames': frame,
                     'direction': savedValue}
                 yield data
