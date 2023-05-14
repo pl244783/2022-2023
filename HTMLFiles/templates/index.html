@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="/static/main.css" />
   </head>
   <div class="body">
-
     <div class="downL">
       Video 
       <!-- <div id="video-container">
@@ -24,49 +23,58 @@
           }
       </script> -->
       <div id="video-container">
-        <img id="myImage" src="" alt="Image", width = 100%>
-        <img id="overlay-image" src="/static/forward.png">
+        <img id="myImage" src="" alt="Image" />
+        <img id="overlay-image" src="static/forward.png"/>
       </div>
-      <p id="direction"></p>
-      AHHHHHHHHHHHHHHHHHHHH
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          const imgElement = document.getElementById('myImage');
-          const directionElement = document.getElementById('direction');
-          const imageOverlay = document.getElementById('overlay-image')
-
-          function fetchBase64Image() {
-            fetch('/data_feed')
-              .then(response => response.json())
-              .then(base64Image => {
-                imgElement.src = 'data:image;base64,' + base64Image.frames;
-                directionElement.textContent = 'Direction: ' + base64Image.direction;
-
-                function rotateImage(direction) {
-                  switch (direction) {
-                    case 'left':
-                      imageOverlay.style.transform = 'rotate(-90deg)';
-                      break;
-                    case 'right':
-                      imageOverlay.style.transform = 'rotate(90deg)';
-                      break;
-                    default:
-                      imageOverlay.style.transform = 'rotate(0deg)'; // Default is no rotation for 'forward'
-                      break;
-                  }
-                  rotateImage(base64Image.direction)
-                }
-                console.log('data:image;base64,' + base64Image.frames);
-              })
-              .catch(error => {
-                console.error('Error fetching base64 image:', error);
-              });
+      <div id="bodyText">
+        <p id="direction"></p>
+        AHHHHHHHHHHHHHHHHHHHH
+      </div>
+        <script>
+          function rotateImage(Element, direction) {
+            let angle = '0';
+            switch (direction) {
+              case 'Left':
+                angle = '-90'
+                break;
+              case 'Right':
+                angle = '90'
+                break;
+              case 'Forward':
+                angle = '0'
+                break;
+              default:
+                break;
+            }
+    
+            Element.style.transform = "rotate(" + angle + "deg)";
           }
-
-          fetchBase64Image();
-          setInterval(fetchBase64Image, 10);
-        });
-      </script>
+    
+          document.addEventListener("DOMContentLoaded", function () {
+            const imgElement = document.getElementById("myImage");
+            const directionElement = document.getElementById("direction");
+            const compassImage = document.getElementById("overlay-image");
+    
+            function fetchBase64Image() {
+              fetch("/data_feed")
+                .then((response) => response.json())
+                .then((base64Image) => {
+                  imgElement.src = "data:image;base64," + base64Image.frames;
+                  directionElement.textContent =
+                    "Direction: " + base64Image.direction;
+    
+                  //console.log('data:image;base64,' + base64Image.frames);
+                  rotateImage(compassImage, base64Image.direction)
+                })
+                .catch((error) => {
+                  console.error("Error fetching base64 image:", error);
+                });
+            }
+    
+            fetchBase64Image();
+            setInterval(fetchBase64Image, 10);
+          });
+        </script>
     </div>
 
     <div class="downR">

@@ -55,13 +55,14 @@ button{
   cursor: pointer;
 }
 
-iframe {
-  position: relative;
+.bodyText{
+  font-size: 16px;
+  line-height: 0.5;
 }
 
 #overlay-image {
   position: absolute;
-  top: 10%;
+  top: 13%;
   left: 3%;
   width: 5%;
   height: 5%;

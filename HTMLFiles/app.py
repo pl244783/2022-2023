@@ -208,9 +208,7 @@ def gen_frames():
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-#-------------------------------------------
 
-#-----------------------------------------------------------------------
 @app.route('/video_feed')
 def video_feed():
     return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -224,14 +222,14 @@ def data_feed():
 
 # @app.route('/test_route')
 # def test_route():
-#     return render_template('test.html')
+#     return render_template('test[Decrepit].html')
 
 
 #------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------------
 
-def run_vid_processing(queue):
+def videoProcessor(queue):
     def nearBy(x1, y1, x2, y2, currentLineSlope):
         if currentLineSlope > 0.5 and currentLineSlope < 1.2:
             #cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
@@ -334,11 +332,11 @@ def run_vid_processing(queue):
             
             if smallestLine[0] < frame.shape[1] * 5 and len(savedValue) == 7:
                 if smallestLine[0] < frame.shape[1] - smallestLine[1] :
-                    savedValue = ('left')
+                    savedValue = ('Left')
                 else:
-                    savedValue = ('right')
+                    savedValue = ('Right')
         else:
-            savedValue = 'forward'
+            savedValue = 'Forward'
         #print(savedValue)
         _, encoded_image = cv2.imencode('.jpg', frame)
         frame = base64.b64encode(encoded_image).decode()
@@ -346,15 +344,14 @@ def run_vid_processing(queue):
         data = {'frames': frame, 'direction': savedValue}
         queue.put(data)
     
-def run_video_bg(queue):
+def backGroundVideo(queue):
     while True:
-        run_vid_processing(queue)
+        videoProcessor(queue)
         time.sleep(1)
-
 
 if __name__=='__main__':
     queue = multiprocessing.Queue()
-    process1 = multiprocessing.Process(target=run_video_bg, args=(queue,))
+    process1 = multiprocessing.Process(target=backGroundVideo, args=(queue,))
     process1.daemon = True
     process1.start()
 
