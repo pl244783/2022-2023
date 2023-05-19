@@ -230,6 +230,15 @@ def data_feed():
 # ------------------------------------------------------------------------------------------
 
 def videoProcessor(queue):
+    cars_cascade = cv2.CascadeClassifier('HTMLFiles/static/haarcascade_car.xml')
+
+    def detect_cars_and_pedestrain(frame):
+        cars = cars_cascade.detectMultiScale(frame, 1.15, 4)
+        for (x, y, w, h) in cars:
+            cv2.rectangle(frame, (x+1, y+1), (x+w,y+h), color=(255, 0, 0), thickness=2)
+            cv2.rectangle(frame, (x, y), (x+w, y+h), color=(0, 255, 0), thickness=2)
+        return frame
+
     def nearBy(x1, y1, x2, y2, currentLineSlope):
         if currentLineSlope > 0.5 and currentLineSlope < 1.2:
             #cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
@@ -337,6 +346,9 @@ def videoProcessor(queue):
                     savedValue = ('Right')
         else:
             savedValue = 'Forward'
+
+        frame = detect_cars_and_pedestrain(frame)
+
         #print(savedValue)
         _, encoded_image = cv2.imencode('.jpg', frame)
         frame = base64.b64encode(encoded_image).decode()
