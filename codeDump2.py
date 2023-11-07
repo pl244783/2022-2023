@@ -45,4 +45,13 @@ img = cv2.resize(img, dsize=(900,900))
 cv2.imshow('Result', img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-#
+
+
+# dArray = [[[0,0],[1,1]],[[2, 2],[3,3]]]
+# print(dArray[0], dArray[0][1], dArray[1][1][1])
+
+#ok contours is a 4darray
+# print(contours[1][0][0], 'lmao')    
+# for i in range(1, len(contours)-1):
+#     if abs(contours[i-1][0]-contours[i][0]) > 3 and abs(contours[i-1][0]-contours[i][0]) > 3:
+#         cv2.drawContours(img, contours, -1, (0, 255, 0), 3)
